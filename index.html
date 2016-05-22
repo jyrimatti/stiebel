@@ -1,0 +1,311 @@
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.min.js"></script>
+<script src="jquery.flot.rangeselection.js"></script>
+<!--<script src="jquery.flot.autoMarkings.js"></script>-->
+<script src="jquery.flot.tooltip.min.js"></script>
+<script src="jquery.flot.downsample.js"></script>
+<!--<script src="jquery.flot.touch.js"></script>-->
+<style type="text/css">
+.plot {
+  width: 100%;
+  height: 200px;
+}
+#smallgraph {
+  height: 50px;
+  clear: both;
+}
+.button, a {
+  width: 85px;
+  text-align: center;
+  height: 15px;
+  border: 1px solid Black;
+  background-color: LightGray;
+  padding: 3px;
+  float: left;
+  margin-left: 3px;
+}
+a {
+  width: 50px;
+  text-decoration: none;
+}
+a.first {
+  margin-left: 30px;
+}
+.selected {
+  background-color: LightBlue;
+}
+.flot-x-axis div {
+  margin-left: 40px;
+}
+</style>
+</head>
+<body>
+<a class="first" href="#status">status</a>
+<a href="#dhw">dhw</a>
+<a href="#heating">heating</a>
+<a href="#system">system</a>
+<div id="smallgraph" class="plot"></div>
+
+<script type="text/javascript">
+  var pGraphs = [];
+  var sGraph;
+
+  var opts = {
+    xaxis: {
+      mode: 'time',
+      timezone: 'browser',
+      timeformat: "%e.%m.%Y<br/>%H:%M",
+      font: {
+          size: 10,
+          color: 'black'
+      }
+    },
+    /*yaxis: {
+      min: 0
+    },*/
+    series: {
+      lines: {
+        show: true,
+        steps: true
+      },
+      points: {
+        show: true
+      },
+      autoMarkings: {
+        enabled: true,
+          showMinMax: true,
+          showAvg: true
+      },
+      downsample: {
+        threshold: 5000
+      }
+    },
+    grid: {
+      hoverable: true,
+      autoHighlight: true
+    },
+    tooltip: {
+      show: true,
+      content: "%x | %y.1"
+    },
+    legend: {
+      show: true,
+      position: "nw",
+      labelFormatter: function(label, series) {
+        return 'Range avg: ' + avg(label);
+      }
+    }
+  };
+
+  var avg = function(name) {
+    var plot = $('#'+name).data('plot');
+    var data = plot.getData()[0].data;
+    var min_x = plot.getAxes().xaxis.options.min;
+    var max_x = plot.getAxes().xaxis.options.max;
+    var prev_x = data[0][0];
+    var prev_y = data[0][1];
+    var area = 0;
+    var first_x;
+    for (var i = 1; i < data.length; ++i) {
+      var x = data[i][0];
+      var y = data[i][1];
+      if (min_x != null && x < min_x) {
+        prev_x = x;
+        prev_y = y;
+        continue;
+      }
+      if (max_x != null && x > max_x) {
+        break;
+      }
+      if (first_x == null) {
+        first_x = prev_x;
+      }
+      area += (x - prev_x) * prev_y;
+      prev_x = x;
+      prev_y = y;
+    }
+    return area / (prev_x - first_x);
+  };
+
+  var cop = function(name_power, name_heat) {
+    return function() {
+      var power = $('#'+name_power).data('plot').getData()[0].data.map(function(arr) {arr.kind = 0; return arr;});
+      var heat = $('#'+name_heat).data('plot').getData()[0].data.map(function(arr) {arr.kind = 1; return arr;});
+      var cop = $.extend(true, [], power).concat($.extend(true, [], heat));
+      cop.sort(function(a,b) {return a[0] - b[0];});
+      var cur_power = power[0][1];
+      var cur_heat = heat[0][1];
+      var prev_val = 0;
+      for (var i = 0; i < cop.length; ++i) {
+        var cur = cop[i];
+        if (cur.kind == 0 && cur[1] < cur_power || cur.kind == 1 && cur[1] < cur_heat) {
+          // nollattu
+          if (cur.kind == 0) {
+            cur_power = cur[1];
+          } else {
+            cur_heat = cur[1];
+          }
+          cur[1] = prev_val;
+        } else {
+          if (cur.kind == 0) {
+            cur_power = cur[1];
+          } else {
+            cur_heat = cur[1];
+          }
+          cur[1] = cur_power == 0 || cur_heat < cur_power ? prev_val : cur_heat / cur_power;
+          prev_val = cur[1];
+        }
+      }
+      return cop;
+    };
+  };
+
+  var justDraw = function(name, f, additionalOpts) {
+    $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
+    setTimeout(function() {
+      draw(name, [{label: name, data: f()}], additionalOpts);
+    }, 2000);
+  };
+
+  var getAndDraw = function(name) {
+    $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
+    $.get( name + '.txt', function( data ) {
+      draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
+    });
+  };
+
+  var draw = function(name, data, additionalOpts) {
+      if (sGraph.getData().length == 0) {
+        sGraph.setData($.extend(true,[],data));
+        sGraph.getData()[0].label = null;
+        sGraph.setupGrid();
+        sGraph.draw();
+      }
+      if (document.getElementById(name)) {
+        var pGraph = $.plot($('#'+name), data, $.extend({}, opts, additionalOpts));
+        pGraphs.push(pGraph);
+        $('.button.selected').click();
+      }
+  };
+
+  var rangeselectionCallback = function(o){
+      pGraphs.filter(function(pGraph) { var op = pGraph.getAxes().xaxis.options; return op.min != o.start || op.max != o.end; }).forEach(function(pGraph) {
+          var xaxis = pGraph.getAxes().xaxis;
+          xaxis.options.min = o.start;
+          xaxis.options.max = o.end;
+          pGraph.setupGrid();
+          pGraph.draw();
+      });
+  };
+
+  sGraph = $.plot("#smallgraph",{},$.extend([],opts,{
+            lines: {show: false},
+            points: {show: false},
+            xaxis: { mode: 'time', timezone: 'browser', timeformat: "%Y-%m-%d" },
+            yaxis: {show: false},
+            grid:{
+                color: "#666",
+                backgroundColor: { colors: ["#ddd", "#fff"]}
+            },
+            rangeselection:{
+                color: "cyan",
+                start: 20,
+                end: 100,
+                enabled: true,
+                callback: rangeselectionCallback
+            }
+        }));
+
+  var now = new Date();
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  now = now.getTime() - 60*1000;
+  var quickSelect = function(delta, label) {
+    return $('<div class="button">' + label + '</div>').prependTo(document.body).click(function() {
+      $('.button').removeClass('selected');
+      $(this).addClass('selected');
+      sGraph.setSelection(now - delta, now);
+      rangeselectionCallback({start: now - delta, end: now});
+    });
+  };
+
+  quickSelect(1000*60*60*24*365, 'last 365 days');
+  quickSelect(1000*60*60*24*30, 'last 30 days');
+  quickSelect(1000*60*60*24*7, 'last 7 days');
+  quickSelect(1000*60*60*24*3, 'last 3 days');
+  quickSelect(1000*60*60*24, 'last 24h').click();
+  quickSelect(1000*60*60*10, 'last 10h');
+  quickSelect(1000*60*60, 'last 60min');
+  quickSelect(1000*60*15, 'last 15min');
+
+  var onPage = function(id) {
+    return window.location.href.indexOf(id) != -1 || id=='status' && window.location.href.indexOf('#') == -1;
+  };
+
+  var initGraphs = function() {
+    if (onPage('status')) {
+      getAndDraw('power-locked');
+      getAndDraw('cooling_mode');
+      getAndDraw('dhw_valve');
+      getAndDraw('source_pump');
+      getAndDraw('mixer_open');
+      getAndDraw('mixer_pump');
+      getAndDraw('htg_circ_pump');
+      getAndDraw('compressor');
+      getAndDraw('system_source_temp');
+      getAndDraw('buffer');
+    }
+
+    if (onPage('dhw')) {
+      getAndDraw('dhw_valve');
+      getAndDraw('system_dhw_actual_temp');
+      getAndDraw('power_dhw_day');
+      getAndDraw('heat_dhw_day');
+      justDraw('cop_dhw_day', cop('power_dhw_day', 'heat_dhw_day'), {yaxis: {min: 0, max: 5.5}});
+      getAndDraw('power_dhw_total');
+      getAndDraw('heat_dhw_total');
+      justDraw('cop_dhw_total', cop('power_dhw_total', 'heat_dhw_total'), {yaxis: {min: 0, max: 5.5}});
+    }
+
+    if (onPage('heating')) {
+      getAndDraw('power_heating_day');
+      getAndDraw('heat_heating_day');
+      justDraw('cop_heating_day', cop('power_heating_day', 'heat_heating_day'), {yaxis: {min: 0, max: 8}});
+      getAndDraw('power_heating_total');
+      getAndDraw('heat_heating_total');
+      justDraw('cop_heating_total', cop('power_heating_total', 'heat_heating_total'), {yaxis: {min: 0, max: 8}});
+    }
+
+    if (onPage('system')) {
+      getAndDraw('system_heating_outside_temp');
+      getAndDraw('system_actual_buffer_temp');
+      getAndDraw('system_heating_actual_temp_hc1');
+      getAndDraw('system_heating_actual_temp_hc2');
+      getAndDraw('system_act_temp_hc2');
+      getAndDraw('system_rel_humidity');
+      getAndDraw('system_taupunkttemp');
+      getAndDraw('system_actual_flow_temp');
+      getAndDraw('system_actual_return_temp');
+    }
+  };
+
+  window.onhashchange = function() {
+    $('.plotname').remove();
+    $('.plot:not(#smallgraph)').each(function() {
+      var plot = $(this).data('plot');
+      if (plot) {
+        pGraphs.splice(pGraphs.indexOf(plot), 1);
+        $(this).remove();
+      }
+    });
+    initGraphs();
+  };
+
+  initGraphs();
+</script>
+</body>
+</html>
+
