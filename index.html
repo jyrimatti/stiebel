@@ -172,7 +172,7 @@ a.first {
 
   var getAndDraw = function(name) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
-    $.get( name + '.txt', function( data ) {
+    $.get( 'data/' + name + '.txt', function( data ) {
       draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
     });
   };
