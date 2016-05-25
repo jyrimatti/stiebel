@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p bash
 set -eu
 page=$1
 user=$2
