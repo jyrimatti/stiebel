@@ -174,7 +174,9 @@ a.first {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
     var year = window.location.search.replace('?','/');
     $.get( 'data' + year + '/' + name + '.txt', function( data ) {
-      draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
+      if (data != "") {
+        draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
+      }
     });
   };
 
