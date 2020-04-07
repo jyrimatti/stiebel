@@ -13,7 +13,7 @@ rm -f /tmp/heatpump.html
 rm -f /tmp/system.html
 
 $scripts/get.sh "2,0" "$user" "$pass" > /tmp/status.html
-$scripts/get.sh "1,1" "$user" "$pass" > /tmp/heatpump.html
+$scripts/get.sh "1,2" "$user" "$pass" > /tmp/heatpump.html
 $scripts/get.sh "1,0" "$user" "$pass" > /tmp/system.html
 
 $scripts/status.sh "POWER-LOCKED" < /tmp/status.html >> $dir/power-locked.txt
