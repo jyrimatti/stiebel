@@ -175,6 +175,7 @@ a.first {
     var year = new URLSearchParams(window.location.search).get('year') || new URLSearchParams(window.location.search).get('time') || '';
     $.get( 'data/' + year.substring(0,4) + '/' + name + '.txt', function( data ) {
       if (data != "") {
+        if (console) console.log('Parsing ' + name);
         draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
       }
     });
