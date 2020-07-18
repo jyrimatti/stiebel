@@ -172,9 +172,10 @@ a.first {
 
   var getAndDraw = function(name) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
-    var year = window.location.search.replace('?','/');
-    $.get( 'data' + year + '/' + name + '.txt', function( data ) {
+    var year = new URLSearchParams(window.location.search).get('year') || new URLSearchParams(window.location.search).get('time') || '';
+    $.get( 'data/' + year.substring(0,4) + '/' + name + '.txt', function( data ) {
       if (data != "") {
+        if (console) console.log('Parsing ' + name);
         draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
       }
     });
@@ -222,7 +223,9 @@ a.first {
             }
         }));
 
-  var now = new Date();
+  var year = new URLSearchParams(window.location.search).get('year');
+  var time = new URLSearchParams(window.location.search).get('time');
+  var now = time ? new Date(time) : year ? new Date(parseInt(year)+1,0,0) : new Date();
   now.setSeconds(0);
   now.setMilliseconds(0);
   now = now.getTime() - 60*1000;
