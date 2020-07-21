@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p bash
+#!/bin/bash
 set -eu
 key=$1
 value=$2

@@ -1,13 +1,16 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p bash
+#!/bin/bash
 set -eu
 
-value="${1:-}"
-
-scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-if [ "$value" == "" ]; then
-  $scripts/get.sh 4,2 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
+getset=$1
+value=${4:-}
+if [ "$value" == "true" ]; then
+  value="1";
 else
-  $scripts/post.sh val456 $value $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass)
+  value="0";
+fi
+
+if [ "$getset" == "Get" ]; then
+  /home/pi/stiebel/get.sh 4,2 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
+else
+  /home/pi/stiebel/post.sh val456 $value $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass)
 fi
