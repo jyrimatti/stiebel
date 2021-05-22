@@ -1,55 +1,61 @@
 <html>
-<head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.min.js"></script>
-<script src="jquery.flot.rangeselection.js"></script>
-<!--<script src="jquery.flot.autoMarkings.js"></script>-->
-<script src="jquery.flot.tooltip.min.js"></script>
-<script src="jquery.flot.downsample.js"></script>
-<!--<script src="jquery.flot.touch.js"></script>-->
-<style type="text/css">
-.plot {
-  width: 100%;
-  height: 200px;
-}
-#smallgraph {
-  height: 50px;
-  clear: both;
-}
-.button, a {
-  width: 85px;
-  text-align: center;
-  height: 15px;
-  border: 1px solid Black;
-  background-color: LightGray;
-  padding: 3px;
-  float: left;
-  margin-left: 3px;
-}
-a {
-  width: 50px;
-  text-decoration: none;
-}
-a.first {
-  margin-left: 30px;
-}
-.selected {
-  background-color: LightBlue;
-}
-.flot-x-axis div {
-  margin-left: 40px;
-}
-</style>
-</head>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.min.js"></script>
+    <script src="jquery.flot.rangeselection.js"></script>
+    <!--<script src="jquery.flot.autoMarkings.js"></script>-->
+    <script src="jquery.flot.tooltip.min.js"></script>
+    <script src="jquery.flot.downsample.js"></script>
+    <!--<script src="jquery.flot.touch.js"></script>-->
+    <script src="./dist/bundle.js"></script>
+    <style type="text/css">
+      .plot {
+        width: 100%;
+        height: 200px;
+      }
+      #smallgraph {
+        height: 50px;
+        clear: both;
+      }
+      .button, a {
+        width: 85px;
+        text-align: center;
+        height: 15px;
+        border: 1px solid Black;
+        background-color: LightGray;
+        padding: 3px;
+        float: left;
+        margin-left: 3px;
+      }
+      a {
+        width: 50px;
+        text-decoration: none;
+      }
+      .last {
+        margin-right: 30px;
+      }
+      .selected {
+        background-color: LightBlue;
+      }
+      .flot-x-axis div {
+        margin-left: 40px;
+      }
+    </style>
+  </head>
 <body>
-<a class="first" href="#status">status</a>
-<a href="#dhw">dhw</a>
-<a href="#heating">heating</a>
-<a href="#system">system</a>
+<div id="menu">
+  <a onclick="window.page = 'status';  window.reset();">status</a>
+  <a onclick="window.page = 'dhw';     window.reset();">dhw</a>
+  <a onclick="window.page = 'heating'; window.reset();">heating</a>
+  <a onclick="window.page = 'system';  window.reset();" class="last" >system</a>
+</div>
 <div id="smallgraph" class="plot"></div>
 
 <script type="text/javascript">
+  let BEGIN = new Date('2015-07-01T00:00:00Z');
+
+  window.page = 'status';
   var pGraphs = [];
   var sGraph;
 
@@ -132,90 +138,108 @@ a.first {
 
   var cop = function(name_power, name_heat) {
     return function() {
-      var power = $('#'+name_power).data('plot').getData()[0].data.map(function(arr) {arr.kind = 0; return arr;});
-      var heat = $('#'+name_heat).data('plot').getData()[0].data.map(function(arr) {arr.kind = 1; return arr;});
-      var cop = $.extend(true, [], power).concat($.extend(true, [], heat));
-      cop.sort(function(a,b) {return a[0] - b[0];});
-      var cur_power = power[0][1];
-      var cur_heat = heat[0][1];
-      var prev_val = 0;
-      for (var i = 0; i < cop.length; ++i) {
-        var cur = cop[i];
-        if (cur.kind == 0 && cur[1] < cur_power || cur.kind == 1 && cur[1] < cur_heat) {
-          // nollattu
-          if (cur.kind == 0) {
-            cur_power = cur[1];
+      var powerPlotData = $('#'+name_power).data('plot').getData()[0];
+      var heatPlotData = $('#'+name_heat).data('plot').getData()[0];
+      if (powerPlotData && heatPlotData) {
+        var power = powerPlotData.data.map(function(arr) {arr.kind = 0; return arr;});
+        var heat = heatPlotData.data.map(function(arr) {arr.kind = 1; return arr;});
+        var cop = $.extend(true, [], power).concat($.extend(true, [], heat));
+        cop.sort(function(a,b) {return a[0] - b[0];});
+        var cur_power = power[0][1];
+        var cur_heat = heat[0][1];
+        var prev_val = 0;
+        for (var i = 0; i < cop.length; ++i) {
+          var cur = cop[i];
+          if (cur.kind == 0 && cur[1] < cur_power || cur.kind == 1 && cur[1] < cur_heat) {
+            // nollattu
+            if (cur.kind == 0) {
+              cur_power = cur[1];
+            } else {
+              cur_heat = cur[1];
+            }
+            cur[1] = prev_val;
           } else {
-            cur_heat = cur[1];
+            if (cur.kind == 0) {
+              cur_power = cur[1];
+            } else {
+              cur_heat = cur[1];
+            }
+            cur[1] = cur_power == 0 || cur_heat < cur_power ? prev_val : cur_heat / cur_power;
+            prev_val = cur[1];
           }
-          cur[1] = prev_val;
-        } else {
-          if (cur.kind == 0) {
-            cur_power = cur[1];
-          } else {
-            cur_heat = cur[1];
-          }
-          cur[1] = cur_power == 0 || cur_heat < cur_power ? prev_val : cur_heat / cur_power;
-          prev_val = cur[1];
         }
+        return cop;
       }
-      return cop;
     };
   };
 
   var justDraw = function(name, f, additionalOpts) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
     setTimeout(function() {
-      draw(name, [{label: name, data: f()}], additionalOpts);
+      var elem = document.getElementById(name);
+      var pGraph = $.plot($(elem), [f()], $.extend({name: name, label: name}, opts));
+      pGraphs.push(pGraph);
+      pGraph.setupGrid();
+      pGraph.draw();
     }, 2000);
+  };
+
+  var getData = function(name, cb) {
+    db("SELECT * FROM " + name + " WHERE instant BETWEEN " + (interval.start/1000) + " AND " + (interval.end/1000) + ";")
+      .then(function(data) {
+        if (data != "") {
+          cb(data.map(function(o) {
+            let cols = Object.values(o);
+            cols[0] *= 1000;
+            return cols;
+          }));
+        }
+      });
   };
 
   var getAndDraw = function(name) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
-    var year = new URLSearchParams(window.location.search).get('year') || new URLSearchParams(window.location.search).get('time') || '';
-    $.get( 'data/' + year.substring(0,4) + '/' + name + '.txt', function( data ) {
-      if (data != "") {
-        if (console) console.log('Parsing ' + name);
-        draw(name, [{label: name, data: JSON.parse('[' + data.slice(0, -2) + ']')}]);
-      }
+    var elem = document.getElementById(name);
+    var pGraph = $.plot($(elem), [], $.extend({name: name, label: name}, opts));
+    pGraphs.push(pGraph);
+    getData(name, function(data) {
+      pGraph.setData([data]);
+      pGraph.setupGrid();
+      pGraph.draw();
     });
   };
 
-  var draw = function(name, data, additionalOpts) {
-      if (sGraph.getData().length == 0) {
-        sGraph.setData($.extend(true,[],data));
-        sGraph.getData()[0].label = null;
-        sGraph.setupGrid();
-        sGraph.draw();
-      }
-      if (document.getElementById(name)) {
-        var pGraph = $.plot($('#'+name), data, $.extend({}, opts, additionalOpts));
-        pGraphs.push(pGraph);
-        $('.button.selected').click();
-      }
-  };
-
   var rangeselectionCallback = function(o){
-      pGraphs.filter(function(pGraph) { var op = pGraph.getAxes().xaxis.options; return op.min != o.start || op.max != o.end; }).forEach(function(pGraph) {
+      window.interval = o;
+      var newhash = '#' + new Date(o.start).toISOString() + '/' + new Date(o.end).toISOString();
+      if (newhash !== window.location.hash) {
+        window.location.hash = newhash;
+      }
+      pGraphs.filter(function(pGraph) {var op = pGraph.getAxes().xaxis.options; return op.min != o.start || op.max != o.end; })
+             .forEach(function(pGraph) {
           var xaxis = pGraph.getAxes().xaxis;
           xaxis.options.min = o.start;
           xaxis.options.max = o.end;
-          pGraph.setupGrid();
-          pGraph.draw();
+          var opts = pGraph.getOptions();
+          getData(opts.name, function(data) {
+            pGraph.setData([data]);
+            pGraph.setupGrid();
+            pGraph.draw();
+          });
       });
   };
 
   sGraph = $.plot("#smallgraph",{},$.extend([],opts,{
             lines: {show: false},
             points: {show: false},
-            xaxis: { mode: 'time', timezone: 'browser', timeformat: "%Y-%m-%d" },
+            xaxis: { mode: 'time', timezone: 'browser', timeformat: "%Y-%m-%d", min: BEGIN.getTime(), max: new Date().getTime() },
             yaxis: {show: false},
             grid:{
                 color: "#666",
                 backgroundColor: { colors: ["#ddd", "#fff"]}
             },
             rangeselection:{
-                color: "cyan",
+                color: "blue",
                 start: 20,
                 end: 100,
                 enabled: true,
@@ -230,30 +254,34 @@ a.first {
   now.setMilliseconds(0);
   now = now.getTime() - 60*1000;
   var quickSelect = function(delta, label) {
-    return $('<div class="button">' + label + '</div>').prependTo(document.body).click(function() {
-      $('.button').removeClass('selected');
+    return $('<div class="button">' + label + '</div>').appendTo(document.getElementById('menu')).click(function() {
       $(this).addClass('selected');
-      sGraph.setSelection(now - delta, now);
-      rangeselectionCallback({start: now - delta, end: now});
+      setTimeout(function() {
+        $('.button').removeClass('selected');
+      }, 500);
+      let start = delta == 0 ? BEGIN.getTime() : now - delta;
+      sGraph.setSelection(start, now);
+      rangeselectionCallback({start: start, end: now});
     });
   };
-
-  quickSelect(1000*60*60*24*365, 'last 365 days');
-  quickSelect(1000*60*60*24*30, 'last 30 days');
-  quickSelect(1000*60*60*24*7, 'last 7 days');
-  quickSelect(1000*60*60*24*3, 'last 3 days');
-  quickSelect(1000*60*60*24, 'last 24h').click();
-  quickSelect(1000*60*60*10, 'last 10h');
-  quickSelect(1000*60*60, 'last 60min');
+  
   quickSelect(1000*60*15, 'last 15min');
+  quickSelect(1000*60*60, 'last 60min');
+  quickSelect(1000*60*60*10, 'last 10h');
+  quickSelect(1000*60*60*24, 'last 24h');
+  quickSelect(1000*60*60*24*3, 'last 3 days');
+  quickSelect(1000*60*60*24*7, 'last 7 days');
+  quickSelect(1000*60*60*24*30, 'last 30 days');
+  quickSelect(1000*60*60*24*365, 'last 365 days');
+  quickSelect(0, 'all time');
 
   var onPage = function(id) {
-    return window.location.href.indexOf(id) != -1 || id=='status' && window.location.href.indexOf('#') == -1;
+    return page === id;
   };
 
   var initGraphs = function() {
     if (onPage('status')) {
-      getAndDraw('power-locked');
+      getAndDraw('power_locked');
       getAndDraw('cooling_mode');
       getAndDraw('dhw_valve');
       getAndDraw('source_pump');
@@ -300,6 +328,12 @@ a.first {
   };
 
   window.onhashchange = function() {
+    var i = window.location.hash ? window.location.hash.substring(1).split('/').map(x => new Date(x).getTime())
+                                 : [new Date().getTime() - 1000*60*60*24, new Date()];
+    rangeselectionCallback({start: i[0], end: i[1]});
+  };
+
+  window.reset = function() {
     $('.plotname').remove();
     $('.plot:not(#smallgraph)').each(function() {
       var plot = $(this).data('plot');
