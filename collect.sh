@@ -4,6 +4,7 @@ set -eu
 user=$1
 pass=$2
 dir=$3
+host=${4:-192.168.1.44}
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -11,9 +12,9 @@ rm -f /tmp/status.html
 rm -f /tmp/heatpump.html
 rm -f /tmp/system.html
 
-$scripts/get.sh "2,0" "$user" "$pass" > /tmp/status.html
-$scripts/get.sh "1,2" "$user" "$pass" > /tmp/heatpump.html
-$scripts/get.sh "1,0" "$user" "$pass" > /tmp/system.html
+$scripts/get.sh "2,0" "$user" "$pass" "$host" > /tmp/status.html
+$scripts/get.sh "1,2" "$user" "$pass" "$host" > /tmp/heatpump.html
+$scripts/get.sh "1,0" "$user" "$pass" "$host" > /tmp/system.html
 
 $scripts/status.sh "POWER-LOCKED" < /tmp/status.html >> $dir/power-locked.txt
 $scripts/status.sh "COOLING MODE" < /tmp/status.html >> $dir/cooling_mode.txt
