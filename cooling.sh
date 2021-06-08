@@ -10,7 +10,7 @@ else
 fi
 
 if [ "$getset" == "Get" ]; then
-  /home/pi/stiebel/get.sh 4,2 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
+  /home/pi/stiebel/get.sh 4,2 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) "aurinkofarmi" | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
 else
-  /home/pi/stiebel/post.sh val456 $value $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass)
+  /home/pi/stiebel/post.sh val456 $value $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) "aurinkofarmi"
 fi
