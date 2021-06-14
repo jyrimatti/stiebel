@@ -51,6 +51,7 @@
   <a onclick="window.page = 'system';  window.reset();" class="last" >system</a>
 </div>
 <div id="smallgraph" class="plot"></div>
+<input id="query" size="150" value="select * from system_heating_outside_temp where instant between {start} and {end}" placeholder="your query here..." />
 
 <script type="text/javascript">
   let BEGIN = new Date('2015-07-01T00:00:00Z');
@@ -173,26 +174,37 @@
     };
   };
 
-  var justDraw = function(name, f, additionalOpts) {
+  var changed = [false, false, false, false];
+
+  var justDraw = function(name, f, additionalOptions, index) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
-    setTimeout(function() {
-      var elem = document.getElementById(name);
-      var pGraph = $.plot($(elem), [f()], $.extend({name: name, label: name}, opts));
-      pGraphs.push(pGraph);
-      pGraph.setupGrid();
-      pGraph.draw();
-    }, 2000);
+    setInterval(function() {
+      if (changed[index]) {
+        changed[index] = false;
+        var elem = document.getElementById(name);
+        var pGraph = $.plot($(elem), [f()], $.extend($.extend({name: name, label: name}, opts), additionalOptions));
+        pGraphs.push(pGraph);
+        pGraph.setupGrid();
+        pGraph.draw();
+      }
+    }, 1000);
   };
 
-  var getData = function(name, cb) {
+  var stdQuery = function(name) { 
+    return function(start, end) {
+      return "SELECT * FROM (SELECT * FROM " + name + " WHERE instant <= " + start + " ORDER BY instant DESC LIMIT 1) " +
+            "UNION ALL " +
+            "SELECT * FROM (SELECT * FROM " + name + " WHERE instant BETWEEN " + start + " AND " + end + ") " +
+            "UNION ALL " +
+            "SELECT * FROM (SELECT * FROM " + name + " WHERE instant >= " + end + " ORDER BY instant LIMIT 1);"
+    };
+  };
+
+  var getData = function(name, queryF, cb) {
     console.log("Querying " + name + " for " + JSON.stringify(interval));
     var start = (Math.floor(interval.start.getTime()/1000));
     var end = Math.floor((interval.end.getTime()/1000));
-    db("SELECT * FROM (SELECT * FROM " + name + " WHERE instant <= " + start + " ORDER BY instant DESC LIMIT 1) " +
-       "UNION ALL " +
-       "SELECT * FROM (SELECT * FROM " + name + " WHERE instant BETWEEN " + start + " AND " + end + ") " +
-       "UNION ALL " +
-       "SELECT * FROM (SELECT * FROM " + name + " WHERE instant >= " + end + " ORDER BY instant LIMIT 1);")
+    db(queryF(start, end))
       .then(function(data) {
         if (data == "") {
           console.log("Got empty data for " + name);
@@ -207,22 +219,22 @@
       });
   };
 
-  var getAndDraw = function(name) {
+  var getAndDraw = function(name, queryF) {
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
     var elem = document.getElementById(name);
-    var pGraph = $.plot($(elem), [], $.extend({name: name, label: name}, opts));
+    var pGraph = $.plot($(elem), [], $.extend({name: name, label: name, queryF: queryF || stdQuery(name)}, opts));
     var xaxis = pGraph.getAxes().xaxis;
     xaxis.options.min = interval.start.getTime();
     xaxis.options.max = interval.end.getTime();
     pGraphs.push(pGraph);
-    getData(name, function(data) {
+    getData(name, pGraph.getOptions().queryF, function(data) {
       pGraph.setData([data]);
       pGraph.setupGrid();
       pGraph.draw();
     });
   };
 
-  var rangeselectionCallback = function(range) {
+  var rangeselectionCallback = function(range, onlycustom) {
       if (range) {
         window.interval = {start: new Date(range.start), end: new Date(range.end)};
       }
@@ -230,16 +242,19 @@
       if (newhash !== window.location.hash) {
         window.location.hash = newhash;
       }
-      pGraphs.filter(function(pGraph) {var op = pGraph.getAxes().xaxis.options; return op.min != interval.start.getTime() || op.max != interval.end.getTime(); })
-             .forEach(function(pGraph) {
+      pGraphs.filter(function(pGraph) {
+          var op = pGraph.getAxes().xaxis.options;
+          return (onlycustom && pGraph.getOptions().name == 'custom') || op.min != interval.start.getTime() || op.max != interval.end.getTime();
+        }).forEach(function(pGraph) {
           var xaxis = pGraph.getAxes().xaxis;
           xaxis.options.min = interval.start.getTime();
           xaxis.options.max = interval.end.getTime();
           var opts = pGraph.getOptions();
-          getData(opts.name, function(data) {
+          getData(opts.name, opts.queryF, function(data) {
             pGraph.setData([data]);
             pGraph.setupGrid();
             pGraph.draw();
+            changed = [true, true, true, true];
           });
       });
   };
@@ -293,6 +308,14 @@
   var initGraphs = function() {
     console.log("Initializing plots");
 
+    getAndDraw('custom', function(start, end) {
+      return document.getElementById('query').value.replace("{start}", start)
+                                                   .replace("{end}", end);
+    });
+    document.getElementById('query').onchange = function() {
+      rangeselectionCallback(undefined, true);
+    };
+
     if (onPage('status')) {
       getAndDraw('power_locked');
       getAndDraw('cooling_mode');
@@ -312,19 +335,19 @@
       getAndDraw('system_dhw_actual_temp');
       getAndDraw('power_dhw_day');
       getAndDraw('heat_dhw_day');
-      justDraw('cop_dhw_day', cop('power_dhw_day', 'heat_dhw_day'), {yaxis: {min: 0, max: 5.5}});
+      justDraw('cop_dhw_day', cop('power_dhw_day', 'heat_dhw_day'), {yaxis: {min: 0, max: 5.5}}, 0);
       getAndDraw('power_dhw_total');
       getAndDraw('heat_dhw_total');
-      justDraw('cop_dhw_total', cop('power_dhw_total', 'heat_dhw_total'), {yaxis: {min: 0, max: 5.5}});
+      justDraw('cop_dhw_total', cop('power_dhw_total', 'heat_dhw_total'), {yaxis: {min: 0, max: 5.5}}, 1);
     }
 
     if (onPage('heating')) {
       getAndDraw('power_heating_day');
       getAndDraw('heat_heating_day');
-      justDraw('cop_heating_day', cop('power_heating_day', 'heat_heating_day'), {yaxis: {min: 0, max: 8}});
+      justDraw('cop_heating_day', cop('power_heating_day', 'heat_heating_day'), {yaxis: {min: 0, max: 8}}, 2);
       getAndDraw('power_heating_total');
       getAndDraw('heat_heating_total');
-      justDraw('cop_heating_total', cop('power_heating_total', 'heat_heating_total'), {yaxis: {min: 0, max: 8}});
+      justDraw('cop_heating_total', cop('power_heating_total', 'heat_heating_total'), {yaxis: {min: 0, max: 8}}, 3);
     }
 
     if (onPage('system')) {
