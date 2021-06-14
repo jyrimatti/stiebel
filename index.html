@@ -185,15 +185,25 @@
   };
 
   var getData = function(name, cb) {
-    db("SELECT * FROM " + name + " WHERE instant BETWEEN " + (interval.start/1000) + " AND " + (interval.end/1000) + ";")
+    console.log("Querying " + name + " for " + JSON.stringify(interval));
+    var start = (Math.floor(interval.start.getTime()/1000));
+    var end = Math.floor((interval.end.getTime()/1000));
+    db("SELECT * FROM (SELECT * FROM " + name + " WHERE instant <= " + start + " ORDER BY instant DESC LIMIT 1) " +
+       "UNION ALL " +
+       "SELECT * FROM (SELECT * FROM " + name + " WHERE instant BETWEEN " + start + " AND " + end + ") " +
+       "UNION ALL " +
+       "SELECT * FROM (SELECT * FROM " + name + " WHERE instant >= " + end + " ORDER BY instant LIMIT 1);")
       .then(function(data) {
-        if (data != "") {
+        if (data == "") {
+          console.log("Got empty data for " + name);
+        } else {
+          console.log("Got " + data.length + " rows for " + name);
+        }
           cb(data.map(function(o) {
             let cols = Object.values(o);
             cols[0] *= 1000;
             return cols;
           }));
-        }
       });
   };
 
@@ -209,17 +219,19 @@
     });
   };
 
-  var rangeselectionCallback = function(o){
-      window.interval = o;
-      var newhash = '#' + new Date(o.start).toISOString() + '/' + new Date(o.end).toISOString();
+  var rangeselectionCallback = function(range) {
+      if (range) {
+        window.interval = {start: new Date(range.start), end: new Date(range.end)};
+      }
+      var newhash = '#' + new Date(interval.start).toISOString() + '/' + new Date(interval.end).toISOString();
       if (newhash !== window.location.hash) {
         window.location.hash = newhash;
       }
-      pGraphs.filter(function(pGraph) {var op = pGraph.getAxes().xaxis.options; return op.min != o.start || op.max != o.end; })
+      pGraphs.filter(function(pGraph) {var op = pGraph.getAxes().xaxis.options; return op.min != interval.start.getTime() || op.max != interval.end.getTime(); })
              .forEach(function(pGraph) {
           var xaxis = pGraph.getAxes().xaxis;
-          xaxis.options.min = o.start;
-          xaxis.options.max = o.end;
+          xaxis.options.min = interval.start.getTime();
+          xaxis.options.max = interval.end.getTime();
           var opts = pGraph.getOptions();
           getData(opts.name, function(data) {
             pGraph.setData([data]);
@@ -247,21 +259,17 @@
             }
         }));
 
-  var year = new URLSearchParams(window.location.search).get('year');
-  var time = new URLSearchParams(window.location.search).get('time');
-  var now = time ? new Date(time) : year ? new Date(parseInt(year)+1,0,0) : new Date();
-  now.setSeconds(0);
-  now.setMilliseconds(0);
-  now = now.getTime() - 60*1000;
   var quickSelect = function(delta, label) {
     return $('<div class="button">' + label + '</div>').appendTo(document.getElementById('menu')).click(function() {
       $(this).addClass('selected');
       setTimeout(function() {
         $('.button').removeClass('selected');
       }, 500);
+      var now = new Date().getTime();
       let start = delta == 0 ? BEGIN.getTime() : now - delta;
       sGraph.setSelection(start, now);
-      rangeselectionCallback({start: start, end: now});
+      window.interval = {start: new Date(start), end: new Date(now)};
+      rangeselectionCallback();
     });
   };
   
@@ -280,6 +288,8 @@
   };
 
   var initGraphs = function() {
+    console.log("Initializing plots");
+
     if (onPage('status')) {
       getAndDraw('power_locked');
       getAndDraw('cooling_mode');
@@ -327,13 +337,19 @@
     }
   };
 
+  var readInterval = function() {
+    var initialInterval = window.location.hash ? window.location.hash.substring(1).split('/').map(x => new Date(x))
+                                             : [new Date(new Date().getTime() - 1000*60*60*24), new Date()];
+    return {start: initialInterval[0], end: initialInterval[1]};
+  };
+
   window.onhashchange = function() {
-    var i = window.location.hash ? window.location.hash.substring(1).split('/').map(x => new Date(x).getTime())
-                                 : [new Date().getTime() - 1000*60*60*24, new Date()];
-    rangeselectionCallback({start: i[0], end: i[1]});
+    window.interval = readInterval();
+    rangeselectionCallback();
   };
 
   window.reset = function() {
+    console.log("Removing plots");
     $('.plotname').remove();
     $('.plot:not(#smallgraph)').each(function() {
       var plot = $(this).data('plot');
@@ -345,9 +361,7 @@
     initGraphs();
   };
 
-  var initialInterval = window.location.hash ? window.location.hash.substring(1).split('/').map(x => new Date(x).getTime())
-                                             : [new Date().getTime() - 1000*60*60*24, new Date().getTime()];
-  window.interval = {start: initialInterval[0], end: initialInterval[1]};
+  window.interval = readInterval();
 
   initGraphs();
 </script>
