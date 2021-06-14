@@ -14,7 +14,7 @@ async function load(query: string) {
         from: "inline",
         config: {
           serverMode: "full",
-          url: "/stiebel.db",
+          url: "/stiebel/stiebel.db",
           requestChunkSize: 4096,
         },
       },
