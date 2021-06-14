@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p bash bc
+#!/bin/bash
 set -eu
 section=$1
 flag=$2
