@@ -211,6 +211,9 @@
     $(document.body).append('<div class="plotname">' + name + '</div><div id="' + name + '" class="plot"></div>');
     var elem = document.getElementById(name);
     var pGraph = $.plot($(elem), [], $.extend({name: name, label: name}, opts));
+    var xaxis = pGraph.getAxes().xaxis;
+    xaxis.options.min = interval.start.getTime();
+    xaxis.options.max = interval.end.getTime();
     pGraphs.push(pGraph);
     getData(name, function(data) {
       pGraph.setData([data]);
