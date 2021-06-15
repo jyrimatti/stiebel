@@ -5,4 +5,4 @@ dir=$1
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 rm -f "$dir/stiebel.db.bak"
-echo "VACUUM INTO '$dir/stiebel.db.bak'" | sqlite3 -cmd ".timeout 30000" "$dir/stiebel.db"
+echo "VACUUM INTO '$dir/stiebel.db.bak'" | sqlite3 -cmd ".timeout 90000" "$dir/stiebel.db"
