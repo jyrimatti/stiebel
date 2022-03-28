@@ -6,7 +6,9 @@ set -eu
 #DEVICEID=$DEVICEID
 #TOKEN=$TOKEN
 
-source ./ouman_objects.sh "$1"
+scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source $scripts/ouman_objects.sh "$1"
 
 # 22 == ? (0.05)
 # 28 == decription

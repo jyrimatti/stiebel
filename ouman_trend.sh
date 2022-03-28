@@ -8,7 +8,9 @@ set -eu
 DATE1=$(date '+%C%y-%m-%d %H:%M:%S' -d "$2")
 DATE2=${3:-$(date '+%C%y-%m-%d %H:%M:%S' -d "$DATE1 +1 day")}
 
-source ./ouman_objects.sh "$1"
+scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source $scripts/ouman_objects.sh "$1"
 
 WSTOKEN=$(curl -s "https://oulite.ouman.io/socket.io/1/?deviceid=$DEVICEID&token=$TOKEN" | sed 's/\([^:]*\):.*/\1/g')
 
