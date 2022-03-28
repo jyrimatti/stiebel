@@ -5,12 +5,12 @@ user=$1
 pass=$2
 dir=$3
 
+scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 $scripts/ouman_login.sh "$user" "$pass"
 
 export DEVICEID=$(cat /tmp/ouman-headers | tail -n-1)
 export TOKEN=$(cat /tmp/ouman-headers | head -n-1)
-
-scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 start=$(date '+%C%y-%m-%d %H:%M:%S' -d '-30minutes')
 end=$(date '+%C%y-%m-%d %H:%M:%S')
