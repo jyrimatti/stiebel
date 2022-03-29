@@ -48,7 +48,8 @@
   <a onclick="window.page = 'status';  window.reset();">status</a>
   <a onclick="window.page = 'dhw';     window.reset();">dhw</a>
   <a onclick="window.page = 'heating'; window.reset();">heating</a>
-  <a onclick="window.page = 'system';  window.reset();" class="last" >system</a>
+  <a onclick="window.page = 'system';  window.reset();">system</a>
+  <a onclick="window.page = 'swegon';  window.reset();" class="last">swegon</a>
 </div>
 <div id="smallgraph" class="plot"></div>
 <input id="query" size="150" value="select * from system_heating_outside_temp where instant between {start} and {end}" placeholder="your query here..." />
@@ -360,6 +361,16 @@
       getAndDraw('system_taupunkttemp');
       getAndDraw('system_actual_flow_temp');
       getAndDraw('system_actual_return_temp');
+    }
+
+    if (onPage('swegon')) {
+      getAndDraw('outsideTemp');
+      getAndDraw('supplyTemperature');
+      getAndDraw('indoorTemperature');
+      getAndDraw('co2');
+      getAndDraw('ah');
+      getAndDraw('supplyFan');
+      getAndDraw('exhaustFan');
     }
   };
 
