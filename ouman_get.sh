@@ -3,12 +3,18 @@
 #! nix-shell -I channel:nixos-21.11-small -i bash -p websocat jq
 set -eu
 
-#DEVICEID=$DEVICEID
-#TOKEN=$TOKEN
+object=$1
+user=$2
+pass=$3
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source $scripts/ouman_objects.sh "$1"
+$scripts/ouman_login.sh "$user" "$pass"
+
+export DEVICEID=$(cat /tmp/ouman-headers | tail -n-1)
+export TOKEN=$(cat /tmp/ouman-headers | head -n-1)
+
+source $scripts/ouman_objects.sh "$object"
 
 # 22 == ? (0.05)
 # 28 == decription
