@@ -340,4 +340,194 @@ case $1 in
     export ID=3
     export OBJECTID=102
     ;;
+  
+  # variables
+  ServiceInfo)
+    export ID=3
+    export OBJECTID=75
+    ;;
+  FilterGuardInfo)
+    export ID=3
+    export OBJECTID=76
+    ;;
+  ActiveAlarms)
+    export ID=3
+    export OBJECTID=44
+    ;;
+  UnconfirmedInfo)
+    export ID=3
+    export OBJECTID=60
+    ;;
+  CO2MeasurementUnfiltered)
+    export ID=3
+    export OBJECTID=20
+    ;;
+  autoRHControl)
+    export ID=3
+    export OBJECTID=22
+    ;;
+  rhMeasure)
+    export ID=3
+    export OBJECTID=22
+    ;;
+  AHSetpoint)
+    export ID=3
+    export OBJECTID=24
+    ;;
+  unitState)
+    export ID=3
+    export OBJECTID=26
+    ;;
+  fireplaceTimer)
+    export ID=3
+    export OBJECTID=31
+    ;;
+  weekTimerActive)
+    export ID=3
+    export OBJECTID=32
+    ;;
+  AutoRHControl)
+    export ID=3
+    export OBJECTID=34
+    ;;
+  AutoAirQualityControl)
+    export ID=3
+    export OBJECTID=35
+    ;;
+  AutoTemperatureBoostControl)
+    export ID=3
+    export OBJECTID=36
+    ;;
+  smartControl)
+    export ID=3
+    export OBJECTID=37
+    ;;
+  DDCFanSpeedControl)
+    export ID=3
+    export OBJECTID=39
+    ;;
+  fireplaceFunctionActive)
+    export ID=3
+    export OBJECTID=40
+    ;;
+  centralVacuumCleaner)
+    export ID=3
+    export OBJECTID=41
+    ;;
+  hoodCompensationActive)
+    export ID=3
+    export OBJECTID=42
+    ;;
+  fireplaceFunctionOn)
+    export ID=3
+    export OBJECTID=153
+    ;;
+  fireplaceFunctionOff)
+    export ID=3
+    export OBJECTID=154
+    ;;
+  shutDownCommand)
+    export ID=3
+    export OBJECTID=155
+    ;;
+  startUpCommand)
+    export ID=3
+    export OBJECTID=156
+    ;;
+  travelMode)
+    export ID=3
+    export OBJECTID=112
+    ;;
+  cookerHoodFunction)
+    export ID=3
+    export OBJECTID=113
+    ;;
+  centralVacuumCleanerControl)
+    export ID=3
+    export OBJECTID=114
+    ;;
+  autoAirQualityControl)
+    export ID=3
+    export OBJECTID=160
+    ;;
+  temperatureBoostControl)
+    export ID=3
+    export OBJECTID=117
+    ;;
+  autoAirQualityControlBoostLimit)
+    export ID=3
+    export OBJECTID=126
+    ;;
+  autoAirQualityControlFullBoostLimit)
+    export ID=3
+    export OBJECTID=127
+    ;;
+  SmartFunctionVisibilityFireplace)
+    export ID=3
+    export OBJECTID=133
+    ;;
+  SmartFunctionVisibilityTravelling)
+    export ID=3
+    export OBJECTID=134
+    ;;
+  smartFunctionVisibilityHood)
+    export ID=3
+    export OBJECTID=135
+    ;;
+  smartFunctionVisibilityCentralVacuum)
+    export ID=3
+    export OBJECTID=136
+    ;;
+  smartFunctionSmartBoost)
+    export ID=3
+    export OBJECTID=137
+    ;;
+  smartFunctionHeatingBoost)
+    export ID=3
+    export OBJECTID=139
+    ;;
+  SmartFunctionVisibilityShutdown)
+    export ID=3
+    export OBJECTID=140
+    ;;
+  supplyAway)
+    export ID=3
+    export OBJECTID=141
+    ;;
+  supplyHome)
+    export ID=3
+    export OBJECTID=142
+    ;;
+  supplyBoost)
+    export ID=3
+    export OBJECTID=143
+    ;;
+  supplySmart)
+    export ID=3
+    export OBJECTID=144
+    ;;
+  supplyAirTemperature)
+    export ID=3
+    export OBJECTID=17
+    ;;
+  summerCoolingRoomTempLimit)
+    export ID=3
+    export OBJECTID=130
+    ;;
+  summerCoolingBoostRoomTempLimit)
+    export ID=3
+    export OBJECTID=158
+    ;;
+  summerCoolingActive)
+    export ID=3
+    export OBJECTID=80
+    ;;
+  summerCoolingBoostMode)
+    export ID=3
+    export OBJECTID=161
+    ;;
+  vocLinePos)
+    export ID=3
+    export OBJECTID=83
+    ;;
 esac
