@@ -6,15 +6,15 @@ const workerUrl = new URL(
 );
 const wasmUrl = new URL("sql.js-httpvfs/dist/sql-wasm.wasm", import.meta.url);
 
-async function load(query: string) {
-  console.log("Querying: " + query);
+async function load(db: string, query: string) {
+  console.log("Querying " + db + ": " + query);
   const worker = await createDbWorker(
     [
       {
         from: "inline",
         config: {
           serverMode: "full",
-          url: "/stiebel/stiebel.db",
+          url: "/stiebel/" + db + ".db",
           requestChunkSize: 4096,
         },
       },
@@ -27,4 +27,5 @@ async function load(query: string) {
   return result;
 }
 
-(window as any).db = load;
+(window as any).stiebel = (query: string) => load('stiebel', query);
+(window as any).ouman = (query: string) => load('ouman', query);
