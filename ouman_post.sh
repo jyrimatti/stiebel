@@ -4,8 +4,9 @@
 set -eu
 
 object=$1
-user=$2
-pass=$3
+value=$2
+user=$3
+pass=$4
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -19,9 +20,9 @@ source $scripts/ouman_objects.sh "$object"
 WSTOKEN=$(curl -s "https://oulite.ouman.io/socket.io/1/?deviceid=$DEVICEID&token=$TOKEN" | sed 's/\([^:]*\):.*/\1/g')
 
 # TODO:
-echo '5:::{"name":"message","args":["{\"jsonrpc\":\"2.0\",\"id\":'"$ID"',\"method\":\"read\",\"params\":{\"objects\":[{\"id\":\"'"$OBJECTID"'\",\"device\":255,\"properties\":{\"85\":{}}}]}}"]}' |
+echo '5:::{"name":"message","args":["{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"write\",\"params\":{\"objects\":[{\"id\":\"'"$OBJECTID"'\",\"device\":255,\"properties\":{\"85\":{\"value\":'"$value"'}}}]}}"]}' |
   websocat -n --max-messages-rev=3 "wss://oulite.ouman.io/socket.io/1/websocket/$WSTOKEN?deviceid=$DEVICEID&token=$TOKEN" |
   grep -v '3:::{"jsonrpc":"2.0","method":"device_connected"' |
-  grep '3:::{"jsonrpc":"2.0","id":'"$ID"',"result"' |
+  grep '3:::{"jsonrpc":"2.0","id":3,"result"' |
   sed 's/3::://' |
   jq '.result.objects | .[] | .properties."85".value'

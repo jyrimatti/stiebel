@@ -14,10 +14,10 @@ source $scripts/ouman_objects.sh "$1"
 
 WSTOKEN=$(curl -s "https://oulite.ouman.io/socket.io/1/?deviceid=$DEVICEID&token=$TOKEN" | sed 's/\([^:]*\):.*/\1/g')
 
-echo '5:::{"name":"message","args":["{\"jsonrpc\":\"2.0\",\"id\":'"$ID"',\"method\":\"readtrend2\",\"params\":{\"objects\":[{\"starttime\":\"'"$DATE1"'\",\"endtime\":\"'"$DATE2"'\",\"id\":\"'"$OBJECTID"'\",\"device\":255}]}}"]}' |
+echo '5:::{"name":"message","args":["{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"readtrend2\",\"params\":{\"objects\":[{\"starttime\":\"'"$DATE1"'\",\"endtime\":\"'"$DATE2"'\",\"id\":\"'"$OBJECTID"'\",\"device\":255}]}}"]}' |
   websocat -n --max-messages-rev=3 -B512000 "wss://oulite.ouman.io/socket.io/1/websocket/$WSTOKEN?deviceid=$DEVICEID&token=$TOKEN" |
   grep -v '3:::{"jsonrpc":"2.0","method":"device_connected"' |
-  grep '3:::{"jsonrpc":"2.0","id":'"$ID"',"result"' |
+  grep '3:::{"jsonrpc":"2.0","id":3,"result"' |
   sed 's/3::://' |
   jq '.result.objects | .[] | .trenddata' |
   tr -d '"' |

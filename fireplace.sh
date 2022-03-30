@@ -10,7 +10,7 @@ else
 fi
 
 if [ "$getset" == "Set" ]; then
-  /home/pi/stiebel/ouman_post.sh fireplaceFunctionActive $value "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
+  /home/pi/stiebel/ouman_post.sh fireplaceFunctionOn $value "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 else
   /home/pi/stiebel/ouman_get.sh fireplaceFunctionActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 fi
