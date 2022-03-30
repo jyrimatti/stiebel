@@ -25,4 +25,4 @@ echo '5:::{"name":"message","args":["{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"
   grep -v '3:::{"jsonrpc":"2.0","method":"device_connected"' |
   grep '3:::{"jsonrpc":"2.0","id":3,"result"' |
   sed 's/3::://' |
-  jq '.result.objects | .[] | .properties."85".value'
+  jq '.result.code'
