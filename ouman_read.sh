@@ -1,9 +1,9 @@
 #!/bin/bash
 set -eu
 
-object=$1
-getset=$2
-characteristic=${4:-}
+getset=$1
+object=$2
+characteristic=${3:-}
 
 if [ "$characteristic" == "On" ]; then
   echo 1
