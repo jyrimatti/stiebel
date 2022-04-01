@@ -10,5 +10,5 @@ if [ "$characteristic" == "On" ]; then
 elif [ "$getset" == "Get" ]; then
   /home/pi/stiebel/ouman_get.sh "$object" "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 else
-  echo 1
+  exit 1
 fi
