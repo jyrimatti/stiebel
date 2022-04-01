@@ -10,6 +10,7 @@ else
 fi
 
 if [ "$getset" == "Set" ]; then
+  # TODO:
   /home/pi/stiebel/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 else
   /home/pi/stiebel/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
