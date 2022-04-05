@@ -4,7 +4,7 @@ set -eu
 user=$1
 pass=$2
 dir=$3
-host=${4:-192.168.1.44}
+host=$4
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

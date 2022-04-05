@@ -9,9 +9,11 @@ else
   value="0";
 fi
 
+scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 if [ "$getset" == "Set" ]; then
   # TODO:
-  /home/pi/stiebel/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
+  $scripts/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 else
-  /home/pi/stiebel/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
+  $scripts/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 fi
