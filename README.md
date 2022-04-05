@@ -98,6 +98,8 @@ See the ready made scripts:
 Homebridge configuration
 ========================
 
+![HomeKit](homekit.jpeg)
+
 You can use these scripts with Homebridge to show and modify values with Apple HomeKit. Example configuration:
 ```
 {
@@ -264,6 +266,8 @@ Build the javascripts by running
 If you don't have Nix on some machine, just do it the old fashioned way.
 
 Serve this directory with a web server. You can use `./serve.sh` to try locally. Use Nginx or other web server that supports byte-range-requests and caching for efficient SQLite database access over HTTP.
+
+![Screenshot](screenshot.png)
 
 External hosting
 ================
