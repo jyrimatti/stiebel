@@ -278,30 +278,54 @@ case $1 in
   CO2MeasurementUnfiltered)
     export OBJECTID=20
     ;;
+  #CO2Measurement)
+  #  export OBJECTID=21
+  #  ;;
   autoRHControl)
     export OBJECTID=22
     ;;
   rhMeasure)
     export OBJECTID=22
     ;;
+  #AH)
+  #  export OBJECTID=23
+  #  ;;
   AHSetpoint)
     export OBJECTID=24
     ;;
+  #VOC)
+  #  export OBJECTID=25
+  #  ;;
   unitState)
     export OBJECTID=26
     ;;
+  ventilationSpeedState_)
+    export OBJECTID=27
+    ;;
+  #travelFunction)
+  #  export OBJECTID=30
+  #  ;;
   fireplaceTimer)
     export OBJECTID=31
     ;;
   weekTimerActive)
     export OBJECTID=32
     ;;
+  #AControl)
+  #  export OBJECTID=33
+  #  ;;
   AutoRHControl)
     export OBJECTID=34
     ;;
+  #AutoRHControlM)
+  #  export OBJECTID=34
+  #  ;;
   AutoAirQualityControl)
     export OBJECTID=35
     ;;
+  #AutoAirQualityControlM)
+  #  export OBJECTID=35
+  #  ;;
   AutoTemperatureBoostControl)
     export OBJECTID=36
     ;;
@@ -332,6 +356,9 @@ case $1 in
   startUpCommand)
     export OBJECTID=156
     ;;
+  fanSpeedMode_)
+    export OBJECTID=111
+    ;;
   travelMode)
     export OBJECTID=112
     ;;
@@ -341,12 +368,33 @@ case $1 in
   centralVacuumCleanerControl)
     export OBJECTID=114
     ;;
+  #AutoHomeAwayBoostControl)
+  #  export OBJECTID=115
+  #  ;;
+  #RH)
+  #  export OBJECTID=159
+  #  ;;
+  #autoRHControlSP)
+  #  export OBJECTID=159
+  #  ;;
   autoAirQualityControl)
     export OBJECTID=160
+    ;;
+  autoAirQualityControlSP)
+    export OBJECTID=160
+    ;;
+  boostTime_)
+    export OBJECTID=116
     ;;
   temperatureBoostControl)
     export OBJECTID=117
     ;;
+  #HomeLimit)
+  #  export OBJECTID=122
+  #  ;;
+  #AwayLimit)
+  #  export OBJECTID=123
+  #  ;;
   autoAirQualityControlBoostLimit)
     export OBJECTID=126
     ;;
@@ -368,6 +416,9 @@ case $1 in
   smartFunctionSmartBoost)
     export OBJECTID=137
     ;;
+  #smartFunctionVisibilitySummerCoolingBoost)
+  #  export OBJECTID=138
+  #  ;;
   smartFunctionHeatingBoost)
     export OBJECTID=139
     ;;
@@ -386,11 +437,29 @@ case $1 in
   supplySmart)
     export OBJECTID=144
     ;;
+  #rhControlBoostLimit)
+  #  export OBJECTID=124
+  #  ;;
+  #rhControlFullBoostLimit)
+  #  export OBJECTID=125
+  #  ;;
   supplyAirTemperature)
     export OBJECTID=17
     ;;
+  #indoorTemperature)
+  #  export OBJECTID=18
+  #  ;;
+  temperatureSetPoint_)
+    export OBJECTID=157
+    ;;
   summerCoolingRoomTempLimit)
     export OBJECTID=130
+    ;;
+  #tempControllerType)
+  #  export OBJECTID=131
+  #  ;;
+  supplyControlPowerOutput_)
+    export OBJECTID=38
     ;;
   summerCoolingBoostRoomTempLimit)
     export OBJECTID=158
@@ -401,6 +470,12 @@ case $1 in
   summerCoolingBoostMode)
     export OBJECTID=161
     ;;
+  #deviceFWMajor)
+  #  export OBJECTID=81
+  #  ;;
+  #deviceFWMinor)
+  #  export OBJECTID=82
+  #  ;;
   vocLinePos)
     export OBJECTID=83
     ;;
