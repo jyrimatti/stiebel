@@ -14,5 +14,5 @@ scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ "$getset" == "Set" ]; then
   $scripts/ouman_post.sh summerCoolingFunctionMode $value "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 else
-  $scripts/ouman_get.sh summerCoolingActive "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
+  $scripts/ouman_get.sh summerCoolingFunctionMode "$(cat /home/pi/ouman-user)" "$(cat /home/pi/ouman-pass)"
 fi
