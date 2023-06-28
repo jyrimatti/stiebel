@@ -1,19 +1,19 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p bash
+#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p bash nix
 set -eu
 
 getset=$1
-value=${4:-}
+value=${2:-}
 if [ "$value" == "true" ]; then
   value="1";
 else
   value="0";
 fi
 
-scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ./stiebel_env.sh
 
 if [ "$getset" == "Set" ]; then
-  $scripts/stiebel_post.sh val456 $value $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) $(cat /home/pi/stiebel-host)
+  ./stiebel_post.sh val456 $value
 else
-  $scripts/stiebel_get.sh 4,2 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) $(cat /home/pi/stiebel-host) | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
+  ./stiebel_get.sh 4,2 | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
 fi

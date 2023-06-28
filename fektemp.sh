@@ -1,7 +1,7 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p bash
+#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p bash nix
 set -eu
 
-scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ./stiebel_env.sh
 
-$scripts/stiebel_get.sh 1,0 $(cat /home/pi/stiebel-user) $(cat /home/pi/stiebel-pass) $(cat /home/pi/stiebel-host) | $scripts/stiebel_system.sh "ROOM TEMPERATURE" "ACTUAL TEMPERATURE FEK" | sed 's/.* //' | sed 's/[^.0-9].*//'
+./stiebel_get.sh 1,0 | ./stiebel_system.sh "ROOM TEMPERATURE" "ACTUAL TEMPERATURE FEK" | sed 's/.* //' | sed 's/[^.0-9].*//'
