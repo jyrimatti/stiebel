@@ -2,7 +2,7 @@
 #! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bash nix
 set -eu
 
-getset=$1
+getset=${1:-}
 value=${4:-}
 if [ "$value" == "true" ]; then
   value="1";
