@@ -31,39 +31,3 @@ create table system_rel_humidity            (instant INTEGER PRIMARY KEY, measur
 create table system_source_pressure         (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table system_source_temp             (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table system_taupunkttemp            (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-
-/*
-create unique index buffer_pk                          on buffer(instant);
-create unique index compressor_pk                      on compressor(instant);
-create unique index cooling_mode_pk                    on cooling_mode(instant);
-create unique index dhw_valve_pk                       on dhw_valve(instant);
-create unique index heat_dhw_day_pk                    on heat_dhw_day(instant);
-create unique index heat_dhw_total_pk                  on heat_dhw_total(instant);
-create unique index heat_heating_day_pk                on heat_heating_day(instant);
-create unique index heat_heating_total_pk              on heat_heating_total(instant);
-create unique index htg_circ_pump_pk                   on htg_circ_pump(instant);
-create unique index mixer_open_pk                      on mixer_open(instant);
-create unique index mixer_pump_pk                      on mixer_pump(instant);
-create unique index power_dhw_day_pk                   on power_dhw_day(instant);
-create unique index power_dhw_total_pk                 on power_dhw_total(instant);
-create unique index power_heating_day_pk               on power_heating_day(instant);
-create unique index power_heating_total_pk             on power_heating_total(instant);
-create unique index power_locked_pk                    on power_locked(instant);
-create unique index source_pump_pk                     on source_pump(instant);
-create unique index system_act_temp_hc2_pk             on system_act_temp_hc2(instant);
-create unique index system_actual_buffer_temp_pk       on system_actual_buffer_temp(instant);
-create unique index system_actual_flow_temp_nhz_pk     on system_actual_flow_temp_nhz(instant);
-create unique index system_actual_flow_temp_pk         on system_actual_flow_temp(instant);
-create unique index system_actual_return_temp_pk       on system_actual_return_temp(instant);
-create unique index system_dhw_actual_temp_pk          on system_dhw_actual_temp(instant);
-create unique index system_dhw_flow_rate_pk            on system_dhw_flow_rate(instant);
-create unique index system_heating_actual_temp_hc1_pk  on system_heating_actual_temp_hc1(instant);
-create unique index system_heating_actual_temp_hc2_pk  on system_heating_actual_temp_hc2(instant);
-create unique index system_heating_flow_rate_pk        on system_heating_flow_rate(instant);
-create unique index system_heating_outside_temp_pk     on system_heating_outside_temp(instant);
-create unique index system_heating_pressure_pk         on system_heating_pressure(instant);
-create unique index system_rel_humidity_pk             on system_rel_humidity(instant);
-create unique index system_source_pressure_pk          on system_source_pressure(instant);
-create unique index system_source_temp_pk              on system_source_temp(instant);
-create unique index system_taupunkttemp_pk             on system_taupunkttemp(instant);
-*/

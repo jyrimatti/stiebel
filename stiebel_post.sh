@@ -1,5 +1,7 @@
-#!/bin/bash
+#! /usr/bin/env nix-shell
+#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p curl
 set -eu
+
 key=$1
 value=$2
 user=$3
