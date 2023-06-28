@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash -I channel:nixos-22.11-small -p bash sqlite nix
+#! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bash sqlite nix
 set -eu
 
 source ./stiebel_env.sh
