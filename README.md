@@ -74,7 +74,7 @@ Then create somewhere a symlink named `nix-shell` pointing to just the regular s
 
 after which you can override nix-shell with PATH:
 ```
-PATH=~/.local/nix-override:$PATH ./current.sh
+PATH=~/.local/nix-override:$PATH ./homebridge/temp.sh
 ```
 
 Cron
@@ -102,78 +102,14 @@ Writing a value to Stiebel (in this case `summermode`):
 ```
 The first argument is the key to submit and the second is the value. You need to find the key by doing a submit with the browser.
 
-See the ready made scripts:
-- cooling.sh
-- fektemp.sh
-- summermode.sh
-- temp.sh
+See the ready made scripts in `./homebridge`
 
 Homebridge configuration
 ========================
 
-![HomeKit](homekit.jpeg)
+You can use these scripts with Homebridge to show and modify values with Apple HomeKit.
 
-You can use these scripts with Homebridge to show and modify values with Apple HomeKit. Example configuration:
-```
-{
-    "bridge": {
-        "name": "Homebridge",
-        "username": "11:22:33:44:55:66",
-        "port": 51826,
-        "pin": "123-45-678"
-    },
-    "description": "",
-    "accessories": [],
-    "platforms": [
-    {
-         "platform": "Cmd4",
-         "name": "Cmd4",
-         "outputConstants": false,
-         "_bridge": {
-            "username": "AA:AA:AA:AA:AA:27",
-            "port": 51827
-         },
-         "interval": 600,
-         "timeout": 10000,
-         "accessories" :
-         [
-            {
-               "type":                    "TemperatureSensor",
-               "name":                    "OutsideTemperature",
-               "displayName":             "OutsideTemperature",
-               "statusActive":            "TRUE",
-               "currentTemperature":      66.6,
-               "stateChangeResponseTime": 5,
-               "polling":                 true,
-               "state_cmd":               ". /etc/profile; /home/pi/stiebel/temp.sh"
-            },
-            {
-               "type":                    "TemperatureSensor",
-               "name":                    "InsideTemperature",
-               "displayName":             "InsideTemperature",
-               "statusActive":            "TRUE",
-               "currentTemperature":      66.6,
-               "stateChangeResponseTime": 5,
-               "polling":                 true,
-               "state_cmd":               ". /etc/profile; /home/pi/stiebel/fektemp.sh"
-            },
-            {
-               "type":        "Switch",
-               "name":        "Cooling",
-               "displayName": "Cooling",
-               "state_cmd":   ". /etc/profile; /home/pi/stiebel/cooling.sh"
-            },
-            {
-               "type":        "Switch",
-               "name":        "Summermode (stiebel)",
-               "displayName": "Summermode (stiebel)",
-               "state_cmd":   ". /etc/profile; /home/pi/stiebel/summermode.sh"
-            }
-        ]
-    }
-    ]
-}
-```
+See [example configuration](homebridge/config.json).
 
 HTML page
 =========

@@ -2,6 +2,7 @@ data
 dist/
 node_modules/
 stiebel.db
+stiebel.db.bak
 stiebel.db.historia
 .stiebel-user
 .stiebel-pass
