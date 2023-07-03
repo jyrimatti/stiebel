@@ -24,13 +24,35 @@ Prerequisites
 
 Setup
 =====
-- git clone this repo
-- store your Stiebel credentials to `.stiebel-user` and `.stiebel-pass`
-- store your Stiebel network box ipaddress/hostname to `.stiebel-host`
-- create database: `./stiebel_createdb.sh`
-- setup cronjobs
-- setup Homebridge
-- ~~profit!~~
+
+Assuming user home directory
+```
+cd ~
+```
+
+Clone this repo
+```
+git clone https://github.com/jyrimatti/stiebel.git
+```
+
+Store Stiebel credentials and hostname
+```
+echo '<my stiebel user>' > .stiebel-user
+echo '<my stiebel password>' > .stiebel-pass
+echo '<my stiebel host>' > .stiebel-host
+chmod go-rwx .stiebel*
+```
+
+Create database
+```
+./stiebel_createdb.sh
+```
+
+[Setup cronjobs](#cron)
+
+[Setup Homebridge](#homebridge-configuration)
+
+~~profit!~~
 
 Dependencies
 ============
@@ -60,7 +82,7 @@ Cron
 
 Use cron job to read values periodically, for example:
 ```
-2,7,12,17,22,27,32,37,42,47,52,57 * * * * myuser export PATH=~/.local/nix-override:$PATH; cd ~/stiebel; ./stiebel_collect2db.sh
+2,7,12,17,22,27,32,37,42,47,52,57 * * * * pi export PATH=~/.local/nix-override:$PATH; cd ~/stiebel; ./stiebel_collect2db.sh
 ```
 
 This will periodically read specified datasets from Stiebel and store them to the databases ignoring consecutive duplicate values.
@@ -116,36 +138,36 @@ You can use these scripts with Homebridge to show and modify values with Apple H
          "accessories" :
          [
             {
-               "type": "TemperatureSensor",
-               "displayName": "OutsideTemperature",
-               "statusActive":             "TRUE",
-               "currentTemperature":        66.6,
-               "name":                     "OutsideTemperature",
-               "stateChangeResponseTime":   5,
-               "polling": true,
-               "state_cmd": ". /etc/profile; /home/myuser/stiebel/temp.sh"
+               "type":                    "TemperatureSensor",
+               "name":                    "OutsideTemperature",
+               "displayName":             "OutsideTemperature",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; /home/pi/stiebel/temp.sh"
             },
             {
-               "type": "TemperatureSensor",
-               "displayName": "InsideTemperature",
-               "statusActive":             "TRUE",
-               "currentTemperature":        66.6,
-               "name":                     "InsideTemperature",
-               "stateChangeResponseTime":   5,
-               "polling": true,
-               "state_cmd": ". /etc/profile; /home/myuser/stiebel/fektemp.sh"
+               "type":                    "TemperatureSensor",
+               "name":                    "InsideTemperature",
+               "displayName":             "InsideTemperature",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; /home/pi/stiebel/fektemp.sh"
             },
             {
-               "type": "Switch",
+               "type":        "Switch",
+               "name":        "Cooling",
                "displayName": "Cooling",
-               "name": "Cooling",
-               "state_cmd": ". /etc/profile; /home/myuser/stiebel/cooling.sh"
+               "state_cmd":   ". /etc/profile; /home/pi/stiebel/cooling.sh"
             },
             {
-               "type": "Switch",
+               "type":        "Switch",
+               "name":        "Summermode (stiebel)",
                "displayName": "Summermode (stiebel)",
-               "name": "Summermode (stiebel)",
-               "state_cmd": ". /etc/profile; /home/myuser/stiebel/summermode.sh"
+               "state_cmd":   ". /etc/profile; /home/pi/stiebel/summermode.sh"
             }
         ]
     }
