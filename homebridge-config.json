@@ -28,7 +28,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./homebridge/temp.sh"
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/temp.sh"
             },
             {
                "type":                    "TemperatureSensor",
@@ -38,19 +38,19 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./homebridge/fektemp.sh"
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/fektemp.sh"
             },
             {
                "type":        "Switch",
                "name":        "Cooling",
                "displayName": "Cooling",
-               "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./homebridge/cooling.sh"
+               "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./cmd/cooling.sh"
             },
             {
                "type":        "Switch",
                "name":        "Summermode (stiebel)",
                "displayName": "Summermode (stiebel)",
-               "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./homebridge/summermode.sh"
+               "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./cmd/summermode.sh"
             }
         ]
     }

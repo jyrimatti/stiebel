@@ -63,7 +63,7 @@ However, constantly running nix-shell has a lot of overhead, so you might want t
 
 For example, installing with Nix:
 ```
-> nix-env -f https://github.com/NixOS/nixpkgs/archive/nixos-23.05-small.tar.gz -i sqlite websocat curl jq yq htmlq getoptions bc
+> nix-env -f https://github.com/NixOS/nixpkgs/archive/nixos-23.05-small.tar.gz -iA nixpkgs.sqlite nixpkgs.websocat nixpkgs.curl nixpkgs.jq nixpkgs.yq nixpkgs.htmlq nixpkgs.getoptions nixpkgs.bc nixpkgs.rsync
 ```
 
 Then create somewhere a symlink named `nix-shell` pointing to just the regular shell:
@@ -74,7 +74,7 @@ Then create somewhere a symlink named `nix-shell` pointing to just the regular s
 
 after which you can override nix-shell with PATH:
 ```
-PATH=~/.local/nix-override:$PATH ./homebridge/temp.sh
+PATH=~/.local/nix-override:$PATH ./cmd/temp.sh
 ```
 
 Cron
@@ -109,7 +109,7 @@ Homebridge configuration
 
 You can use these scripts with Homebridge to show and modify values with Apple HomeKit.
 
-See [example configuration](homebridge/config.json).
+See [example configuration](homebridge-config.json).
 
 HTML page
 =========
@@ -120,7 +120,7 @@ Build the javascripts by running
 ./package.sh
 ```
 
-If you don't have Nix on some machine, just do it the old fashioned way.
+If you don't have Nix on your machine, just do it the old fashioned way.
 
 Serve this directory with a web server. You can use `./serve.sh` to try locally. Use Nginx or other web server that supports byte-range-requests and caching for efficient SQLite database access over HTTP.
 
