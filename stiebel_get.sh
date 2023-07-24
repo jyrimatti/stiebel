@@ -6,4 +6,4 @@ page=$1
 
 ./stiebel_login.sh
 
-curl --silent --connect-timeout 30 -L -b "/tmp/stiebel-headers-$USER" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/'
+curl --silent --connect-timeout 30 -L -b "/tmp/stiebel-$USER/headers" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/'
