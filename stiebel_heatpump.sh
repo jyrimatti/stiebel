@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bc coreutils
+#! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bc gnugrep gnused
 set -eu
 
 section=$1
