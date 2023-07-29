@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bash nix
+#! nix-shell --pure -i bash -I channel:nixos-23.05-small -p bash nix coreutils
 set -eu
 
 getset=${1:-}
