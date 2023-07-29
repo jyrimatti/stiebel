@@ -4,6 +4,8 @@ set -eu
 
 source ./stiebel_env.sh
 
+./stiebel_login.sh
+
 statusfile="/tmp/stiebel-$USER/status.html"
 heatpumpfile="/tmp/stiebel-$USER/heatpump.html"
 systemfile="/tmp/stiebel-$USER/system.html"
