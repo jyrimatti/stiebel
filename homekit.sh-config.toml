@@ -12,7 +12,7 @@ FirmwareRevision = "100.1.1"
 
 [[services]]
 type = "Switch"
-cmd = "stiebel/cmd/cooling.sh"
+cmd = "cd stiebel; ./cmd/cooling.sh"
 
 [services.characteristics]
 On = false
@@ -21,7 +21,7 @@ Name = "Lattiaviilennys"
 
 [[services]]
 type = "Switch"
-cmd = "stiebel/cmd/summermode.sh"
+cmd = "cd stiebel; ./cmd/summermode.sh"
 
 [services.characteristics]
 On = false
@@ -30,7 +30,7 @@ Name = "Kesätila (maalämpö)"
 
 [[services]]
 type = "TemperatureSensor"
-cmd = "stiebel/cmd/fektemp.sh"
+cmd = "cd stiebel; ./cmd/fektemp.sh"
 polling = 5
 
 [services.characteristics]
@@ -42,7 +42,7 @@ minValue = -30
 
 [[services]]
 type = "TemperatureSensor"
-cmd = "stiebel/cmd/temp.sh"
+cmd = "cd stiebel; ./cmd/temp.sh"
 polling = 60
 
 [services.characteristics]
