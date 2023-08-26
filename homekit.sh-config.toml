@@ -1,0 +1,52 @@
+[[services]]
+type = "AccessoryInformation"
+
+[services.characteristics]
+Identify = {} # leave property completely out 'cos otherwise Homekit won't accept
+Manufacturer = "Stiebel"
+Model = "WPF 10"
+Name = "Maalämpöpumppu"
+SerialNumber = "AA:AA:AA:AA:AA:AA"
+FirmwareRevision = "100.1.1"
+
+
+[[services]]
+type = "Switch"
+cmd = "stiebel/cmd/cooling.sh"
+
+[services.characteristics]
+On = false
+Name = "Lattiaviilennys"
+
+
+[[services]]
+type = "Switch"
+cmd = "stiebel/cmd/summermode.sh"
+
+[services.characteristics]
+On = false
+Name = "Kesätila (maalämpö)"
+
+
+[[services]]
+type = "TemperatureSensor"
+cmd = "stiebel/cmd/fektemp.sh"
+polling = 5
+
+[services.characteristics]
+Name = "Aulan lämpötila"
+[services.characteristics.CurrentTemperature]
+value = 0
+minValue = -30
+
+
+[[services]]
+type = "TemperatureSensor"
+cmd = "stiebel/cmd/temp.sh"
+polling = 60
+
+[services.characteristics]
+Name = "Ulkolämpötila"
+[services.characteristics.CurrentTemperature]
+value = 0
+minValue = -50

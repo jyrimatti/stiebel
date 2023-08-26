@@ -63,13 +63,13 @@ However, constantly running nix-shell has a lot of overhead, so you might want t
 
 For example, installing with Nix:
 ```
-> nix-env -f https://github.com/NixOS/nixpkgs/archive/nixos-23.05-small.tar.gz -iA nixpkgs.sqlite nixpkgs.websocat nixpkgs.curl nixpkgs.jq nixpkgs.yq nixpkgs.htmlq nixpkgs.getoptions nixpkgs.bc nixpkgs.rsync
+> nix-env -f https://github.com/NixOS/nixpkgs/archive/nixos-23.05-small.tar.gz -iA nixpkgs.bash nixpkgs.sqlite nixpkgs.curl nixpkgs.jq nixpkgs.bc nixpkgs.rsync nixpkgs.gnugrep nixpkgs.gnused nixpkgs.gawk nixpkgs.findutils nixpkgs.flock nixpkgs.openssh
 ```
 
 Then create somewhere a symlink named `nix-shell` pointing to just the regular shell:
 ```
 > mkdir ~/.local/nix-override
-> ln -s /bin/sh ~/.local/nix-override/nix-shell
+> ln -s /home/pi/.nix-profile/bin/bash ~/.local/nix-override/nix-shell
 ```
 
 after which you can override nix-shell with PATH:
@@ -82,7 +82,11 @@ Cron
 
 Use cron job to read values periodically, for example:
 ```
-2,7,12,17,22,27,32,37,42,47,52,57 * * * * pi export PATH=~/.local/nix-override:$PATH; cd ~/stiebel; ./stiebel_collect2db.sh
+MAILTO=pi
+USER=pi
+PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin
+
+2,7,12,17,22,27,32,37,42,47,52,57 * * * * cd ~/stiebel; ./stiebel_collect2db.sh 2>&1 1>/dev/null
 ```
 
 This will periodically read specified datasets from Stiebel and store them to the databases ignoring consecutive duplicate values.
@@ -102,14 +106,14 @@ Writing a value to Stiebel (in this case `summermode`):
 ```
 The first argument is the key to submit and the second is the value. You need to find the key by doing a submit with the browser.
 
-See the ready made scripts in `./homebridge`
+See the ready made scripts in `./cmd/`
 
 Homebridge configuration
 ========================
 
 You can use these scripts with Homebridge to show and modify values with Apple HomeKit.
 
-See [example configuration](homebridge-config.json).
+See [example configuration](./homebridge-config.json).
 
 HTML page
 =========
@@ -128,18 +132,21 @@ Serve this directory with a web server. You can use `./serve.sh` to try locally.
 
 External hosting
 ================
-If you prefer to serve your graphs from another server, you can configure cronjobs to sync the databases to it. The scripts use vacuum to create an immutable snapshot to sync.
+If you prefer to serve your graphs from another server, you can configure cronjobs to sync the databases to it.
+Make sure to configure your SSH to use public-key authorization to the target host.
 
 ```
-0,15,30,45 * * * * myuser export PATH=~/.local/nix-override:$PATH; cd ~/stiebel; ./stiebel_vacuum.sh && rsync -avzq -e "ssh -qo StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ./stiebel.db.bak me@myserver.net:/var/www/stiebel/stiebel.db
+MAILTO=pi
+USER=pi
+PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin
+
+0,15,30,45 * * * * cd ~/stiebel; ./stiebel_rsync.sh <remoteuser> <remotehost> <remotepath> 2>&1 1>/dev/null 
 
 ```
 
 Standing on the shoulders of
 ============================
 - [curl](https://curl.se)
-- [websocat](https://github.com/vi/websocat)
-- [getoptions](https://github.com/ko1nksm/getoptions)
 - [jq](https://stedolan.github.io/jq/)
 - [yq](https://github.com/kislyuk/yq)
 - [htmlq](https://github.com/mgdm/htmlq)
