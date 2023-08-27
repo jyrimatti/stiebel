@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 set -eu
 
 DIR=$1
