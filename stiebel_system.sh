@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.05-small -p coreutils gnugrep gnused gawk findutils
+#! nix-shell --pure -i dash -I channel:nixos-23.05-small -p coreutils gnugrep gnused gawk findutils dash
 set -eu
 
 section=$1
