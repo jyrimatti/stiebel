@@ -3,7 +3,7 @@
 set -eu
 
 login() {
-    mkdir -p "/tmp/stiebel-$USER"
+    test -e "/tmp/stiebel-$USER" || mkdir -p "/tmp/stiebel-$USER"
     flock "/tmp/stiebel-$USER/lock-login" curl --silent --show-error --connect-timeout 30 -d "make=send&user=$STIEBEL_USER&pass=$STIEBEL_PASSWORD" --cookie-jar "/tmp/stiebel-$USER/cookies" http://$STIEBEL_HOST/?s=0 > /dev/null
 }
 
