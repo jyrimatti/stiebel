@@ -7,4 +7,4 @@ value=$2
 
 ./stiebel_login.sh
 
-curl -X POST --silent --show-error -L -b /tmp/stiebel-$USER/cookies http://$STIEBEL_HOST/save.php -d "data=%5B%7B%22name%22%3A%22$key%22%2C%22value%22%3A%22$value%22%7D%5D"
+curl -X POST -4 --silent --show-error -L -b /tmp/stiebel-$USER/cookies http://$STIEBEL_HOST/save.php -d "data=%5B%7B%22name%22%3A%22$key%22%2C%22value%22%3A%22$value%22%7D%5D"

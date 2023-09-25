@@ -10,7 +10,7 @@ page=$1
 
 fetch() {
     test -e "/tmp/stiebel-$USER" || mkdir -p "/tmp/stiebel-$USER"
-    flock "/tmp/stiebel-$USER/lock-$page" curl --silent --show-error --connect-timeout 30 -L -b "/tmp/stiebel-$USER/cookies" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' > "/tmp/stiebel-$USER/$page"
+    flock "/tmp/stiebel-$USER/lock-$page" curl -4 --silent --show-error --connect-timeout 30 -L -b "/tmp/stiebel-$USER/cookies" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' > "/tmp/stiebel-$USER/$page"
 }
 
 if [ ! -f "/tmp/stiebel-$USER/$page" ] || [ ! -s "/tmp/stiebel-$USER/$page" ]; then
