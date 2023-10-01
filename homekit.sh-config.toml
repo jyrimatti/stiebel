@@ -12,7 +12,6 @@ FirmwareRevision = "100.1.1"
 
 [[services]]
 type = "Switch"
-#polling = 60
 
 [services.characteristics]
 Name = "Lattiaviilennys"
@@ -28,21 +27,22 @@ Name = "Kesätila, maalämpö"
 [services.characteristics.On]
 cmd = "cd stiebel; ./cmd/summermode.sh"
 
+
 [[services]]
 type = "TemperatureSensor"
-#polling = 60
 
 [services.characteristics]
 Name = "Aulan lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
+polling = 60
 minValue = -30
 
 [[services]]
 type = "TemperatureSensor"
-polling = 5
 [services.characteristics]
 Name = "Ulkolämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE"
+polling = 60
 minValue = -50
