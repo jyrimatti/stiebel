@@ -4,7 +4,7 @@ set -eu
 
 object=$1
 getset=$2
-value=${4:-}
+value=${5:-}
 
 . ./stiebel_env.sh
 

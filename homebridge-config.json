@@ -28,7 +28,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh OUTSIDE_TEMPERATURE"
             },
             {
                "type":                    "TemperatureSensor",
@@ -38,27 +38,33 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
             },
             {
-               "type":                    "TemperatureSensor",
-               "name":                    "ComfortTemperatureHC1",
-               "displayName":             "ComfortTemperatureHC1",
-               "statusActive":            "TRUE",
-               "currentTemperature":      66.6,
+               "type":                    "Thermostat",
+               "name":                    "HC1 Comfort Temperature",
+               "displayName":             "HC1 Comfort Temperature",
+               "currentHeatingCoolingState": "OFF",
+               "targetHeatingCoolingState": "OFF",
+               "currentTemperature":      11.1,
+               "targetTemperature":       11.1,
+               "temperatureDisplayUnits": "CELSIUS",
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1"
             },
             {
-               "type":                    "TemperatureSensor",
-               "name":                    "EcoTemperatureHC1",
-               "displayName":             "EcoTemperatureHC1",
-               "statusActive":            "TRUE",
-               "currentTemperature":      66.6,
+               "type":                    "Thermostat",
+               "name":                    "HC1 Eco Temperature",
+               "displayName":             "HC1 Eco Temperature",
+               "currentHeatingCoolingState": "OFF",
+               "targetHeatingCoolingState": "OFF",
+               "currentTemperature":      11.1,
+               "targetTemperature":       11.1,
+               "temperatureDisplayUnits": "CELSIUS",
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ECO_TEMPERATURE_HC1"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh ECO_TEMPERATURE_HC1"
             },
             {
                "type":                    "TemperatureSensor",
@@ -68,7 +74,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_BUFFER_TEMPERATURE"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh ACTUAL_BUFFER_TEMPERATURE"
             },
             {
                "type":                    "TemperatureSensor",
@@ -78,7 +84,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh SET_BUFFER_TEMPERATURE"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh SET_BUFFER_TEMPERATURE"
             },
             {
                "type":                    "TemperatureSensor",
@@ -88,7 +94,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_HK_1"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh ACTUAL_TEMPERATURE_HK_1"
             },
             {
                "type":                    "TemperatureSensor",
@@ -98,7 +104,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
             },
             {
                "type":        "Switch",
