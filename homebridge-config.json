@@ -28,7 +28,7 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/temp.sh"
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE"
             },
             {
                "type":                    "TemperatureSensor",
@@ -38,7 +38,67 @@
                "currentTemperature":      66.6,
                "stateChangeResponseTime": 5,
                "polling":                 true,
-               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/fektemp.sh"
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "ComfortTemperatureHC1",
+               "displayName":             "ComfortTemperatureHC1",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "EcoTemperatureHC1",
+               "displayName":             "EcoTemperatureHC1",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ECO_TEMPERATURE_HC1"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "ActualBufferTemperature",
+               "displayName":             "ActualBufferTemperature",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_BUFFER_TEMPERATURE"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "SetBufferTemperature",
+               "displayName":             "SetBufferTemperature",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh SET_BUFFER_TEMPERATURE"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "ActualTemperatureHK1",
+               "displayName":             "ActualTemperatureHK1",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_HK_1"
+            },
+            {
+               "type":                    "TemperatureSensor",
+               "name":                    "ActualTemperatureFek",
+               "displayName":             "ActualTemperatureFek",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               ". /etc/profile; cd /home/pi/stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
             },
             {
                "type":        "Switch",
