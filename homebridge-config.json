@@ -68,6 +68,16 @@
             },
             {
                "type":                    "TemperatureSensor",
+               "name":                    "HC1 Dynamic Temperature",
+               "displayName":             "HC1 Dynamic Temperature",
+               "statusActive":            "TRUE",
+               "currentTemperature":      66.6,
+               "stateChangeResponseTime": 5,
+               "polling":                 true,
+               "state_cmd":               "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/dynamic_temp.sh"
+            },
+            {
+               "type":                    "TemperatureSensor",
                "name":                    "ActualBufferTemperature",
                "displayName":             "ActualBufferTemperature",
                "statusActive":            "TRUE",
@@ -117,6 +127,12 @@
                "name":        "Summermode (stiebel)",
                "displayName": "Summermode (stiebel)",
                "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./cmd/summermode.sh"
+            },
+            {
+               "type":        "Switch",
+               "name":        "Dynamic temp set",
+               "displayName": "Dynamic temp set",
+               "state_cmd":   ". /etc/profile; cd /home/pi/stiebel; ./cmd/dynamic_temp.sh"
             }
         ]
     }
