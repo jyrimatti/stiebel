@@ -120,18 +120,24 @@
                "type":        "Switch",
                "name":        "Cooling",
                "displayName": "Cooling",
+               "polling": true,
+               "on": "TRUE",
                "state_cmd":   "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/cooling.sh"
             },
             {
                "type":        "Switch",
                "name":        "Summermode (stiebel)",
                "displayName": "Summermode (stiebel)",
+               "polling": true,
+               "on": "TRUE",
                "state_cmd":   "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/summermode.sh"
             },
             {
                "type":        "Switch",
                "name":        "Dynamic temp set",
                "displayName": "Dynamic temp set",
+               "polling": true,
+               "on": "TRUE",
                "state_cmd":   "cd /home/pi/stiebel/; PATH=/home/pi/.local/nix-override:/home/pi/.nix-profile/bin:$PATH ./cmd/dynamic_temp.sh"
             }
         ]

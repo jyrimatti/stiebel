@@ -18,5 +18,6 @@ if [ "$getset" = "Set" ]; then
   ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$targetTemp"
   ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Set '' '' "$targetTemp"
 else
-  echo "$targetTemp"
+  echo "$targetTemp" >&2
+  echo 0
 fi
