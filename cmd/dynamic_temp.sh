@@ -7,9 +7,9 @@ getset="$1"
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
 price="${PRICE:-$currentPrice}"
 
-targetTemp="$(echo "-5.5 * l($price - 0.2)/l(10) + 25" | bc -l)"
-if [ "$(echo "$targetTemp > 30" | bc -l)" = "1" ]; then
-  targetTemp=30
+targetTemp="$(echo "-5.5 * l($price + 0.2)/l(10) + 23" | bc -l)"
+if [ "$(echo "$targetTemp > 26" | bc -l)" = "1" ]; then
+  targetTemp=26
 fi
 
 # 21 degrees is a suitable "normal temperature" value for my setup
