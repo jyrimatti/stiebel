@@ -4,8 +4,7 @@ set -eu
 
 getset="$1"
 
-# 20-21 degrees is a suitable "normal temperature" value for my setup
-normalTemp=20
+normalTemp=18
 maxTemp=25
 
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
@@ -19,7 +18,7 @@ else
   next="${NEXT_PRICE:-$nextPrice}"
 
   # some suitable logarithmic curve
-  targetTemp="$(echo "-5.5 * l($price + 0.2)/l(10) + 23" | bc -l)"
+  targetTemp="$(echo "-5.5 * l($price + 0.5)/l(10) + 23" | bc -l)"
 
   if [ "$(echo "$price + $next <= 3" | bc -l)" = "1" ]; then
     # if now and next hour is cheap, keep normal temperature
