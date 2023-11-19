@@ -310,8 +310,8 @@
     console.log("Initializing plots");
 
     getAndDraw('custom', function(start, end) {
-      return document.getElementById('query').value.replace("{start}", start)
-                                                   .replace("{end}", end);
+      return document.getElementById('query').value.replaceAll("{start}", start)
+                                                   .replaceAll("{end}", end);
     });
     document.getElementById('query').onchange = function() {
       rangeselectionCallback(undefined, true);
