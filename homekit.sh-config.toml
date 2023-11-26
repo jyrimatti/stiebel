@@ -15,6 +15,7 @@ type = "Switch"
 
 [services.characteristics]
 Name = "Lattiaviilennys"
+ConfiguredName = "Lattiaviilennys"
 [services.characteristics.On]
 cmd = "cd stiebel; ./cmd/cooling.sh"
 
