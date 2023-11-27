@@ -25,6 +25,7 @@ type = "Switch"
 
 [services.characteristics]
 Name = "Kesätila, maalämpö"
+ConfiguredName = "Kesätila, maalämpö"
 [services.characteristics.On]
 cmd = "cd stiebel; ./cmd/summermode.sh"
 
@@ -34,6 +35,7 @@ type = "TemperatureSensor"
 
 [services.characteristics]
 Name = "Aulan lämpötila"
+ConfiguredName = "Aulan lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
 polling = 60
@@ -43,6 +45,7 @@ minValue = -30
 type = "TemperatureSensor"
 [services.characteristics]
 Name = "Ulkolämpötila"
+ConfiguredName = "Ulkolämpötila"
 [services.characteristics.CurrentTemperature]
 #cmd = "cd stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE" Does not give a value, for whatever reason...
 cmd = "cd stiebel; ./cmd/temp.sh"
