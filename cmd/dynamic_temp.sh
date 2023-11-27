@@ -4,7 +4,7 @@ set -eu
 
 getset="$1"
 
-normalTemp=18
+normalTemp=19
 maxTemp=25
 
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
