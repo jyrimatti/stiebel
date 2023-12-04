@@ -5,6 +5,7 @@ set -eu
 getset="$1"
 
 normalTemp=19
+minTemp=14
 maxTemp=25
 
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
@@ -44,6 +45,10 @@ else
   if [ "$(echo "$effectiveTemp > $maxTemp" | bc -l)" = "1" ]; then
     # Math.min($effectiveTemp, $maxTemp)
     effectiveTemp="$maxTemp"
+  fi
+  if [ "$(echo "$effectiveTemp < $minTemp" | bc -l)" = "1" ]; then
+    # Math.max($effectiveTemp, $minTemp)
+    effectiveTemp="$minTemp"
   fi
 fi
 
