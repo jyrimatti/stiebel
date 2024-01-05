@@ -2,6 +2,18 @@
 
 # https://www.stiebel-eltron.com.au/download/1685919441_321798-44755-9770_ISG%20Modbus_en.pdf
 
+
+# -------------------- MBAP header
+#                      -------------- Data
+# f9 e9 00 00 00 06 ff 03 9c 41 00 02
+# ----- Transaction Identifier
+#       ----- Protocol Identifier
+#             ----- Length
+#                   -- Unit Identifier
+#                      -- function code
+#                         ----- Register start address
+#                               ----- Number of registers
+
 case $object in
 # Block 1: System values (Read input register)
   ACTUAL_TEMPERATURE_FE7)         export OBJECTID=i@501;  export MULTIPLIER=0.1  ;; # °C
