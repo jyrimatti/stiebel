@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep PRICE --keep NEXT_PRICE -i dash -I channel:nixos-23.05-small -p nix dash bc curl cacert gnused
+#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep NIGHT_DELTA -i dash -I channel:nixos-23.05-small -p nix dash bc curl cacert gnused
 set -eu
 
 getset="$1"
@@ -7,6 +7,9 @@ getset="$1"
 normalTemp=19
 minTemp=14
 maxTemp=25
+nightDelta=${NIGHT_DELTA:-1.69}
+nightStart=22
+nightEnd=7
 
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
 nextPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24&delta=1' | sed 's/.*,//g')"
@@ -17,6 +20,12 @@ if [ "$currentPrice" = '' ] || [ "$nextPrice" = '' ]; then
 else
   price="${PRICE:-$currentPrice}"
   next="${NEXT_PRICE:-$nextPrice}"
+
+  currentHour="$(date +%H)"
+  if [ "$currentHour" -ge $nightStart ] && [ "$currentHour" -lt $nightEnd ]; then
+    # night time, lower price by $nightDelta
+    price="$(echo "$price - $nightDelta" | bc -l)"
+  fi
 
   # some suitable logarithmic curve
   targetTemp="$(echo "-10 * l($price + 1.5)/l(10) + 27" | bc -l)"
