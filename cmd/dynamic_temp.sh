@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep NIGHT_DELTA -i dash -I channel:nixos-23.05-small -p nix dash bc curl cacert gnused
+#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.05-small -p nix dash bc curl cacert gnused
 set -eu
 
 getset="$1"
@@ -45,7 +45,7 @@ else
   fi
 
   # increase temperature if room is colder than target
-  currentRoomTemp="$(dash ./cmd/fektemp.sh)"
+  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/fektemp.sh)}"
   if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
     effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
   fi
