@@ -4,19 +4,20 @@ set -eu
 
 getset="$1"
 
-normalTemp=19
-minTemp=14
-maxTemp=25
-nightDelta=${NIGHT_DELTA:-1.69}
-nightStart=22
-nightEnd=7
+targetRoomTemp=21               # target room temperature
+targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
+minTemp=12                      # don't try below this
+maxTemp=25                      # don't try above this
+nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
+nightStart=22                   # night time starts at this hour
+nightEnd=7                      # night time ends at this hour
 
 currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
 nextPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24&delta=1' | sed 's/.*,//g')"
 
 if [ "$currentPrice" = '' ] || [ "$nextPrice" = '' ]; then
   # some error fetching prices -> keep normal temperature
-  effectiveTemp="$normalTemp"
+  effectiveTemp="$targetPumpTemp"
 else
   price="${PRICE:-$currentPrice}"
   next="${NEXT_PRICE:-$nextPrice}"
@@ -30,48 +31,34 @@ else
   # some suitable logarithmic curve
   targetTemp="$(echo "-10 * l($price + 1.5)/l(10) + 27" | bc -l)"
 
-  if [ "$(echo "$price + $next <= 3" | bc -l)" = "1" ]; then
-    # if now and next hour is cheap, keep normal temperature
-    effectiveTemp="$normalTemp"
-  elif [ "$(echo "$price < $next" | bc -l)" = "1" ]; then
-    # next hour will be more expensive, so preheat if it's not too expensive.
-    if [ "$(echo "$price > $targetTemp" | bc -l)" = "1" ]; then
-      # ugh, expensive, don't preheat
-      effectiveTemp="$targetTemp"
-    else
-      # pre-heat more the more expensive the next hour is.
-      effectiveTemp="$(echo "$targetTemp + ($next-$price)/5" | bc -l)"
-    fi
-  else
-    # otherwise next hour will be cheaper, so heat less
-    effectiveTemp="$(echo "$targetTemp + ($next-$price)/5" | bc -l)"
-    if [ "$(echo "$effectiveTemp > $normalTemp" | bc -l)" = "1" ]; then
-      # Math.min($effectiveTemp, $normalTemp)
-      effectiveTemp="$normalTemp"
-    fi
-  fi
+  # next hour will be more expensive -> pre-heat more the more expensive the next hour is.
+  # next hour will be cheaper -> heat less.
+  effectiveTemp="$(echo "$targetTemp + ($next-$price)/5" | bc -l)"
 
+  # Math.min($effectiveTemp, $maxTemp)
   if [ "$(echo "$effectiveTemp > $maxTemp" | bc -l)" = "1" ]; then
-    # Math.min($effectiveTemp, $maxTemp)
     effectiveTemp="$maxTemp"
   fi
+  # Math.max($effectiveTemp, $minTemp)
   if [ "$(echo "$effectiveTemp < $minTemp" | bc -l)" = "1" ]; then
-    # Math.max($effectiveTemp, $minTemp)
     effectiveTemp="$minTemp"
+  fi
+
+  # increase temperature if room is colder than target
+  currentRoomTemp="$(dash ./cmd/fektemp.sh)"
+  if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
+    effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
   fi
 fi
 
 if [ "$getset" = "Set" ]; then
   ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
   ./cmd/modbus.sh ECO_TEMPERATURE_HC1     Set '' '' "$effectiveTemp"
-  if [ "$(echo "$effectiveTemp < $normalTemp" | bc -l)" = "1" ]; then
-    # have to lower both circuits, otherwise buffer will still heat up more
+
+  if [ "$(echo "$effectiveTemp < $targetPumpTemp" | bc -l)" = "1" ]; then
+    # have to lower both circuits, otherwise buffer will still heat up too much
     ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
     ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$effectiveTemp"
-  else
-    # but don't raise actual circuit above normal room temperature
-    ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$normalTemp"
-    ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$normalTemp"
   fi
 else
   echo "$effectiveTemp" >&2
