@@ -31,6 +31,16 @@ cmd = "cd stiebel; ./cmd/summermode.sh"
 
 
 [[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Älylämpötila"
+ConfiguredName = "Älylämpötila"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/dynamic_temp.sh"
+
+
+[[services]]
 type = "TemperatureSensor"
 
 [services.characteristics]
