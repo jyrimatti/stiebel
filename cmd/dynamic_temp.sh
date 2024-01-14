@@ -3,6 +3,7 @@
 set -eu
 
 getset="$1"
+value="${4:-}"
 
 targetRoomTemp=21               # target room temperature
 targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
@@ -61,6 +62,9 @@ if [ "$getset" = "Set" ]; then
     ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$effectiveTemp"
   fi
 else
-  echo "$effectiveTemp" >&2
-  echo 0
+  if [ "$value" = "" ]; then
+    echo "$effectiveTemp"
+  else
+    echo 0 # switch needs a 0/1 response
+  fi
 fi
