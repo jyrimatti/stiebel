@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.05-small -p nix dash bc curl cacert gnused
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert gnused
 set -eu
 
 echo "price room_21 room_20 room_19 room_18"
