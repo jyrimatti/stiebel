@@ -59,7 +59,6 @@ Name = "Aulan lämpötila"
 ConfiguredName = "Aulan lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK"
-polling = 60
 minValue = -30
 
 
@@ -71,7 +70,6 @@ ConfiguredName = "Ulkolämpötila"
 [services.characteristics.CurrentTemperature]
 #cmd = "cd stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE" Does not give a value, for whatever reason...
 cmd = "cd stiebel; ./cmd/temp.sh"
-polling = 60
 minValue = -50
 
 
@@ -83,7 +81,6 @@ Name = "HK1 lämpötila"
 ConfiguredName = "HK1 lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_HK_1"
-polling = 60
 minValue = -30
 
 
@@ -95,7 +92,6 @@ Name = "HC1 Eco lämpötila"
 ConfiguredName = "HC1 Eco lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ECO_TEMPERATURE_HC1"
-polling = 60
 minValue = -30
 
 
@@ -107,7 +103,6 @@ Name = "HC1 Comfort lämpötila"
 ConfiguredName = "HC1 Comfort lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1"
-polling = 60
 minValue = -30
 
 
@@ -119,7 +114,6 @@ Name = "Varaajan lämpötila"
 ConfiguredName = "Varaajan lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_BUFFER_TEMPERATURE"
-polling = 60
 minValue = -30
 
 
@@ -131,5 +125,4 @@ Name = "Varaajan asetuslämpötila"
 ConfiguredName = "Varaajan asetuslämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh SET_BUFFER_TEMPERATURE"
-polling = 60
 minValue = -30
