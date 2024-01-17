@@ -52,6 +52,8 @@ else
   fi
 fi
 
+effectiveTemp="$(printf %.1f "$effectiveTemp")"
+
 if [ "$getset" = "Set" ]; then
   ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
   ./cmd/modbus.sh ECO_TEMPERATURE_HC1     Set '' '' "$effectiveTemp"
