@@ -3,6 +3,7 @@
 set -eu
 
 getset="$1"
+service="${2:-}"
 value="${4:-}"
 
 targetRoomTemp=21               # target room temperature
@@ -64,9 +65,9 @@ if [ "$getset" = "Set" ]; then
     ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$effectiveTemp"
   fi
 else
-  if [ "$value" = "" ]; then
-    echo "$effectiveTemp"
-  else
+  if [ "$service" = "Switch" ]; then
     echo 0 # switch needs a 0/1 response
+  else
+    echo "$effectiveTemp"
   fi
 fi
