@@ -269,6 +269,6 @@ let initChart = (dateFns, dateFnsTz) => {
     legend.data.setAll(legend.data.values.concat([series]));
     initSeries(dateFns, xAxis, series);
     initData(series)(data);
-    initRanges(data, baseInterval == 'hour');
+    //initRanges(data, baseInterval == 'hour');
   };
 };
