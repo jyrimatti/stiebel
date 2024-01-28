@@ -220,25 +220,9 @@ let mkRangeInitializer = (dateFns, dateFnsTz, root, chart, xAxis, showWeekendsF,
 };
 
 let initSeries = (dateFns, xAxis, series) => {
-  series.setAll({
-    fill:      am5.color("#ff8282"),
-    heatRules: [{
-      target:         series.columns.template,
-      dataField:      "valueY",
-      customFunction: (sprite, min, max, value) => {
-        if (value < 0) {
-          sprite.set("fill", am5.color("#00ff00"));
-        } else {
-          sprite.set("fill", am5.color("#ff0000"));
-        }
-      }
-      }]
-  });
-  series.columns.template.adapters.add('opacity', (_,target) =>
-    0.3 + Math.abs(2*target.dataItem.dataContext.centsPerKWh / 40));
     series.events.once("datavalidated", ev =>
-    xAxis.zoomToDates(dateFns.addHours(new Date(), -24),
-                      new Date(Math.max(...ev.target.data.values.map(x => x.instant)))));
+      xAxis.zoomToDates(dateFns.addHours(new Date(), -24),
+                        new Date(Math.max(...ev.target.data.values.map(x => x.instant)))));
 };
 
 let mkLegend = (root, chart) =>
