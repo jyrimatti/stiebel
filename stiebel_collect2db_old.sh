@@ -6,7 +6,7 @@ set -eu
 
 ./stiebel_login.sh
 
-statusfile="/tmp/stiebel-$USER/status.html"
+statusfile="/tmp/stiebel-$USER/status_old.html"
 heatpumpfile="/tmp/stiebel-$USER/heatpump.html"
 systemfile="/tmp/stiebel-$USER/system.html"
 
