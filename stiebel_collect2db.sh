@@ -1,56 +1,102 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p sqlite nix
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix curl cacert flock findutils coreutils gnugrep sqlite gnused dash bc "pkgs.callPackage ./modbus_cli.nix {}"
 set -eu
 
 . ./stiebel_env.sh
 
-./stiebel_login.sh
-
 statusfile="/tmp/stiebel-$USER/status.html"
-heatpumpfile="/tmp/stiebel-$USER/heatpump.html"
-systemfile="/tmp/stiebel-$USER/system.html"
 
 rm -f "$statusfile"
-rm -f "$heatpumpfile"
-rm -f "$systemfile"
 
 ./stiebel_get.sh "2,0" > "$statusfile"
-./stiebel_get.sh "1,2" > "$heatpumpfile"
-./stiebel_get.sh "1,0" > "$systemfile"
 
-./stiebel_status.sh "POWER-LOCKED" < "$statusfile" | ./stiebel_convert.sh 'power_locked'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "COOLING MODE" < "$statusfile" | ./stiebel_convert.sh 'cooling_mode'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "SOURCE PUMP"  < "$statusfile" | ./stiebel_convert.sh 'source_pump'   | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "DHW VALVE"    < "$statusfile" | ./stiebel_convert.sh 'dhw_valve'     | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "MIXER OPEN"   < "$statusfile" | ./stiebel_convert.sh 'mixer_open'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "MIXER PUMP"   < "$statusfile" | ./stiebel_convert.sh 'mixer_pump'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "HTG CIRC PUMP"< "$statusfile" | ./stiebel_convert.sh 'htg_circ_pump' | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "COMPRESSOR"   < "$statusfile" | ./stiebel_convert.sh 'compressor'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_status.sh "BUFFER"       < "$statusfile" | ./stiebel_convert.sh 'buffer'        | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "POWER-LOCKED" < "$statusfile" | dash ./stiebel_convert.sh 'POWER_LOCKED'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "COOLING MODE" < "$statusfile" | dash ./stiebel_convert.sh 'COOLING_MODE'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "SOURCE PUMP"  < "$statusfile" | dash ./stiebel_convert.sh 'SOURCE_PUMP'   | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "DHW VALVE"    < "$statusfile" | dash ./stiebel_convert.sh 'DHW_VALVE'     | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "MIXER OPEN"   < "$statusfile" | dash ./stiebel_convert.sh 'MIXER_OPEN'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "MIXER PUMP"   < "$statusfile" | dash ./stiebel_convert.sh 'MIXER_PUMP'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "HTG CIRC PUMP"< "$statusfile" | dash ./stiebel_convert.sh 'HTG_CIRC_PUMP' | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "COMPRESSOR"   < "$statusfile" | dash ./stiebel_convert.sh 'COMPRESSOR'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+dash ./stiebel_status.sh "BUFFER"       < "$statusfile" | dash ./stiebel_convert.sh 'BUFFER'        | sqlite3 -cmd ".timeout 90000" ./stiebel.db
 
-./stiebel_heatpump.sh "POWER CONSUMPTION" "VD HEATING DAY"   < "$heatpumpfile" | ./stiebel_convert.sh 'power_heating_day'   | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "POWER CONSUMPTION" "VD HEATING TOTAL" < "$heatpumpfile" | ./stiebel_convert.sh 'power_heating_total' | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "POWER CONSUMPTION" "VD DHW DAY"       < "$heatpumpfile" | ./stiebel_convert.sh 'power_dhw_day'       | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "POWER CONSUMPTION" "VD DHW TOTAL"     < "$heatpumpfile" | ./stiebel_convert.sh 'power_dhw_total'     | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+for x in ACTUAL_TEMPERATURE_FEK\
+         SET_TEMPERATURE_FEK\
+         RELATIVE_HUMIDITY\
+         OUTSIDE_TEMPERATURE\
+         ACTUAL_TEMPERATURE_HK_1\
+         SET_TEMPERATURE_HK_1_WPM\
+         ACTUAL_TEMPERATURE_HK_2\
+         SET_TEMPERATURE_HK_2\
+         ACTUAL_FLOW_TEMPERATURE_WP\
+         ACTUAL_FLOW_TEMPERATURE_NHZ\
+         ACTUAL_RETURN_TEMPERATURE\
+         ACTUAL_BUFFER_TEMPERATURE\
+         SET_BUFFER_TEMPERATURE\
+         HEATING_PRESSURE\
+         FLOW_RATE\
+         ACTUAL_TEMPERATURE_DHW\
+         SET_TEMPERATURE_DHW\
+         ACTUAL_TEMPERATURE_AREA\
+         SET_TEMPERATURE_AREA\
+         SOURCE_TEMPERATURE\
+         MIN_SOURCE_TEMPERATURE\
+         SOURCE_PRESSURE\
+         HOT_GAS_TEMPERATURE\
+         HIGH_PRESSURE\
+         LOW_PRESSURE\
+    ; do
+    dash ./cmd/modbus.sh "$x" Get | sed "s/\(.*\)/[$(date +%s),\1]/" | dash ./stiebel_convert.sh "$x" | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+done;
 
-./stiebel_heatpump.sh "AMOUNT OF HEAT" "VD HEATING DAY"   < "$heatpumpfile" | ./stiebel_convert.sh 'heat_heating_day'    | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "AMOUNT OF HEAT" "VD HEATING TOTAL" < "$heatpumpfile" | ./stiebel_convert.sh 'heat_heating_total'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "AMOUNT OF HEAT" "VD DHW DAY"       < "$heatpumpfile" | ./stiebel_convert.sh 'heat_dhw_day'        | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_heatpump.sh "AMOUNT OF HEAT" "VD DHW TOTAL"     < "$heatpumpfile" | ./stiebel_convert.sh 'heat_dhw_total'      | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+for x in OPERATING_MODE\
+         COMFORT_TEMPERATURE_HC1\
+         ECO_TEMPERATURE_HC1\
+         HEATING_CURVE_RISE_HC1\
+         COMFORT_TEMPERATURE_HC2\
+         ECO_TEMPERATURE_HC2\
+         HEATING_CURVE_RISE_HC2\
+         COMFORT_TEMPERATURE_DHW\
+         ECO_TEMPERATURE_DHW\
+         SET_FLOW_TEMPERATURE_AC\
+         FLOW_TEMP_HYSTERESIS_AC\
+         SET_ROOM_TEMPERATURE_AC\
+         RESET\
+         RESTART_ISG\
+    ; do
+    dash ./cmd/modbus.sh "$x" Get | sed "s/\(.*\)/[$(date +%s),\1]/" | dash ./stiebel_convert.sh "$x" | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+done;
 
-./stiebel_system.sh "ROOM TEMPERATURE" "ACTUAL TEMPERATURE FEK"      < "$systemfile" | ./stiebel_convert.sh 'system_act_temp_hc2'             | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "ROOM TEMPERATURE" "RELATIVE HUMIDITY"           < "$systemfile" | ./stiebel_convert.sh 'system_rel_humidity'             | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "ROOM TEMPERATURE" "DEW POINT TEMPERATURE"       < "$systemfile" | ./stiebel_convert.sh 'system_taupunkttemp'             | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "DHW"              "ACTUAL TEMPERATURE"          < "$systemfile" | ./stiebel_convert.sh 'system_dhw_actual_temp'          | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "DHW"              "FLOW RATE"                   < "$systemfile" | ./stiebel_convert.sh 'system_dhw_flow_rate'            | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "SOURCE"           "SOURCE TEMPERATURE"          < "$systemfile" | ./stiebel_convert.sh 'system_source_temp'              | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "SOURCE"           "SOURCE PRESSURE"             < "$systemfile" | ./stiebel_convert.sh 'system_source_pressure'          | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "OUTSIDE TEMPERATURE"         < "$systemfile" | ./stiebel_convert.sh 'system_heating_outside_temp'     | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL TEMPERATURE HK 1"     < "$systemfile" | ./stiebel_convert.sh 'system_heating_actual_temp_hc1'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL TEMPERATURE HK 2"     < "$systemfile" | ./stiebel_convert.sh 'system_heating_actual_temp_hc2'  | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL FLOW TEMPERATURE WP"  < "$systemfile" | ./stiebel_convert.sh 'system_actual_flow_temp'         | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL FLOW TEMPERATURE NHZ" < "$systemfile" | ./stiebel_convert.sh 'system_actual_flow_temp_nhz'     | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL RETURN TEMPERATURE"   < "$systemfile" | ./stiebel_convert.sh 'system_actual_return_temp'       | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "ACTUAL BUFFER TEMPERATURE"   < "$systemfile" | ./stiebel_convert.sh 'system_actual_buffer_temp'       | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "HEATING PRESSURE"            < "$systemfile" | ./stiebel_convert.sh 'system_heating_pressure'         | sqlite3 -cmd ".timeout 90000" ./stiebel.db
-./stiebel_system.sh "HEATING"          "FLOW RATE"                   < "$systemfile" | ./stiebel_convert.sh 'system_heating_flow_rate'        | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+for x in POWER_OFF\
+         FAULT_STATUS\
+         BUS_STATUS\
+         active_error\
+    ; do
+    dash ./cmd/modbus.sh "$x" Get | sed "s/\(.*\)/[$(date +%s),\1]/" | dash ./stiebel_convert.sh "$x" | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+done;
+
+for x in VD_HEATING_DAY_HEAT\
+         VD_HEATING_TOTAL_HEAT_KWH\
+         VD_HEATING_TOTAL_HEAT_MWH\
+         VD_DHW_DAY_HEAT\
+         VD_DHW_TOTAL_HEAT_KWH\
+         VD_DHW_TOTAL_HEAT_MWH\
+         NHZ_HEATING_TOTAL_HEAT_KWH\
+         NHZ_HEATING_TOTAL_HEAT_MWH\
+         NHZ_DHW_TOTAL_HEAT_KWH\
+         NHZ_DHW_TOTAL_HEAT_MWH\
+         VD_HEATING_DAY_POWER\
+         VD_HEATING_TOTAL_POWER_KWH\
+         VD_HEATING_TOTAL_POWER_MWH\
+         VD_DHW_DAY_POWER\
+         VD_DHW_TOTAL_POWER_KWH\
+         VD_DHW_TOTAL_POWER_MWH\
+         VD_HEATING\
+         VD_DHW\
+         VD_COOLING\
+         NHZ_1\
+         NHZ_2\
+         NHZ_1_2\
+    ; do
+    dash ./cmd/modbus.sh "$x" Get | sed "s/\(.*\)/[$(date +%s),\1]/" | dash ./stiebel_convert.sh "$x" | sqlite3 -cmd ".timeout 90000" ./stiebel.db
+done;
