@@ -282,7 +282,7 @@ let initChart = (dateFns, dateFnsTz) => {
       xAxis.set('baseInterval', { timeUnit: baseInterval, count: 1 });
     }
     let series = type === 'T' ? mkSeriesTemp(seriesName) : type === 'F' ? mkSeriesFlag(seriesName) : mkSeriesPower(seriesName);
-    legend.data.setAll(legend.data.get().concat([series]));
+    legend.data.setAll(legend.data.values.concat([series]));
     initSeries(dateFns, xAxis, series);
     initData(series)(data);
     initRanges(data, baseInterval == 'hour');
