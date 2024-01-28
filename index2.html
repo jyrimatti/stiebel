@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Stiebel</title>
+
+    <meta property="og:charset" content="UTF-8"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-title" content="Stiebel"/>
+    <meta name="application-name" content="Stiebel"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/index.js"></script>
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/xy.js"></script>
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/themes/Animated.js"></script>
+    <script crossorigin src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script crossorigin src="https://unpkg.com/@popperjs/core@2"></script>
+    <script crossorigin src="https://unpkg.com/tippy.js@6"></script>
+    <script src="web/dist/sqlite-wasm-http-main.js"></script>
+    <script src="sqlite.js"></script>
+    <script src="chart.js"></script>
+    <script src="ui.js"></script>
+
+    <link crossorigin rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body hx-ext="sqlite" hx-db="http:/stiebel.db">
+    <script>
+      import('https://cdn.skypack.dev/date-fns@2.30.0').then(dateFns => {
+        import('https://cdn.skypack.dev/date-fns-tz@2.0.0').then(dateFnsTz => {
+          initQuery(dateFns, document.getElementById('query'));
+          initTooltips(document);
+          window.init = initChart(dateFns, dateFnsTz);
+
+          htmx.trigger('#query', 'change');
+        });
+      });
+    </script>
+
+    <header>
+      <select id="template" onchange="htmx.find('#query').value = this.value; htmx.trigger('#query', 'change');">
+        <option data-baseInterval="hour"  value="SELECT * FROM spot WHERE instant > strftime('%s', 'now', '-1 months') ORDER BY instant DESC">Past month</option>
+        <option data-baseInterval="hour"  value="SELECT * FROM spot WHERE instant > strftime('%s', 'now', '-3 months') ORDER BY instant DESC">Past 3 months</option>
+        <option data-baseInterval="hour"  value="SELECT * FROM spot WHERE instant > strftime('%s', 'now', '-6 months') ORDER BY instant DESC">Past 6 months</option>
+        <option data-baseInterval="hour"  value="SELECT * FROM spot WHERE instant > strftime('%s', 'now', '-1 year') ORDER BY instant DESC">Past year</option>
+        <option data-baseInterval="hour"  value="SELECT * FROM spot ORDER BY instant DESC">All time</option>
+        <option data-baseInterval="day"   value="SELECT AVG(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m-%d', instant, 'unixepoch') ORDER BY instant DESC">Daily averages</option>
+        <option data-baseInterval="week"  value="SELECT AVG(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%W', instant, 'unixepoch') ORDER BY instant DESC">Weekly averages</option>
+        <option data-baseInterval="month" value="SELECT AVG(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m', instant, 'unixepoch') ORDER BY instant DESC">Monthly averages</option>
+        <option data-baseInterval="day"   value="SELECT MIN(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m-%d', instant, 'unixepoch') ORDER BY instant DESC">Daily minimums</option>
+        <option data-baseInterval="week"  value="SELECT MIN(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%W', instant, 'unixepoch') ORDER BY instant DESC">Weekly minimums</option>
+        <option data-baseInterval="month" value="SELECT MIN(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m', instant, 'unixepoch') ORDER BY instant DESC">Monthly minimums</option>
+        <option data-baseInterval="day"   value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m-%d', instant, 'unixepoch') ORDER BY instant DESC">Daily maximums</option>
+        <option data-baseInterval="week"  value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%W', instant, 'unixepoch') ORDER BY instant DESC">Weekly maximums</option>
+        <option data-baseInterval="month" value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m', instant, 'unixepoch') ORDER BY instant DESC">Monthly maximums</option>
+      </select>
+      
+      <input id="query"
+             value="SELECT * FROM system_heating_outside_temp WHERE instant BETWEEN strftime('%s', '{start}') AND strftime('%s', '{end}') ORDER BY instant DESC"
+             placeholder="your query here..."
+             hx-sql=""
+             hx-boost="true"
+             hx-target=":target tbody"
+             hx-trigger="change"
+             hx-on:htmx:before-on-load="init(event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
+    </header>
+    <section class="container">
+      <div id="chart">
+        <a class="mode table" href="#table" title="Show table" onclick="htmx.trigger('#query', 'change')">🔢</a>
+      </div>
+    </section>
+  </body>
+</html>
+
