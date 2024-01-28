@@ -100,15 +100,6 @@ let mkSeriesConstructor = (dateFns, dateFnsTz, root, chart, xAxis, yAxis) => nam
     minBulletDistance: 25
   });
   chart.series.push(ret);
-
-  ret.bullets.template.adapters.add("tooltipText", (text, target) => {
-    let instant = target.dataItem.dataContext.instant;
-    return dateFnsTz.formatInTimeZone(new Date(instant), 'Europe/Helsinki', "yyyy-MM-dd HH:mm") +
-            " - " +
-            dateFnsTz.formatInTimeZone(dateFns.addHours(new Date(instant), 1), 'Europe/Helsinki', "HH:mm") +
-            "\n" +
-            text;
-  });
   
   return ret;
 };
