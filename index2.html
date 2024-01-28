@@ -63,14 +63,14 @@
              hx-boost="true"
              hx-trigger="revealed"
              hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('ACTUAL_TEMPERATURE_FEK', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
+             hx-on:htmx:before-on-load="init('ACTUAL_TEMPERATURE_FEK', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
 
       <input type="hidden"
              hx-sql="SELECT * FROM OUTSIDE_TEMPERATURE WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
              hx-boost="true"
              hx-trigger="revealed"
              hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('OUTSIDE_TEMPERATURE', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
+             hx-on:htmx:before-on-load="init('OUTSIDE_TEMPERATURE', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
 
       <input id="query"
              value="SELECT * FROM system_heating_outside_temp WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
@@ -79,7 +79,7 @@
              hx-boost="true"
              hx-trigger="change"
              hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('system_heating_outside_temp', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
+             hx-on:htmx:before-on-load="init('system_heating_outside_temp', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
     </header>
     <section class="container">
       <div id="chart"></div>

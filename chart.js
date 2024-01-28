@@ -24,7 +24,7 @@ let mkChart = root =>
 let mkYAxisTemp = (root, chart) => {
   let yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
-      autoZoom:        false,
+      autoZoom:        true,
       min:             -40,
       max:             100,
       renderer:        am5xy.AxisRendererY.new(root, {
@@ -41,7 +41,7 @@ let mkYAxisTemp = (root, chart) => {
 let mkYAxisFlag = (root, chart) => {
   let yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
-      autoZoom:        false,
+      autoZoom:        true,
       min:             0,
       max:             1,
       renderer:        am5xy.AxisRendererY.new(root, {
@@ -58,7 +58,7 @@ let mkYAxisFlag = (root, chart) => {
 let mkYAxisPower = (root, chart) => {
   let yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
-      autoZoom:        false,
+      autoZoom:        true,
       min:             0,
       renderer:        am5xy.AxisRendererY.new(root, {
         minGridDistance: 20
@@ -234,13 +234,13 @@ let initChart = (dateFns, dateFnsTz) => {
   let root = mkRoot();
   window.chart = mkChart(root);
   let yAxisTemp = mkYAxisTemp(root, chart);
-  //let yAxisFlag = mkYAxisFlag(root, chart);
-  //let yAxisPower = mkYAxisPower(root, chart);
+  let yAxisFlag = mkYAxisFlag(root, chart);
+  let yAxisPower = mkYAxisPower(root, chart);
   let xAxis = mkXAxis(root, chart);
 
   let mkSeriesTemp = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisTemp);
-  //let mkSeriesFlag = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisFlag);
-  //let mkSeriesPower = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisPower);
+  let mkSeriesFlag = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisFlag);
+  let mkSeriesPower = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisPower);
 
   let legend = mkLegend(root, chart);
   legend.data.setAll([]);
