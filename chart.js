@@ -95,22 +95,13 @@ let mkSeriesConstructor = (dateFns, dateFnsTz, root, chart, xAxis, yAxis) => nam
     yAxis:             yAxis,
     valueYField:       "measurement",
     valueXField:       "instant",
+    tooltipText:       "{measurement}\n{instant}",
     maskBullets:       false,
     minBulletDistance: 25
   });
-  ret.columns.template.setAll({
-    fillOpacity:    0.5,
-    cornerRadiusTL: 2,
-    cornerRadiusTR: 2,
-    tooltipY:       am5.percent(0),
-    width:          am5.percent(90)
-  });
-  ret.columns.template.states.create("hover", {
-    fillOpacity: 1
-  });
   chart.series.push(ret);
 
-  ret.columns.template.adapters.add("tooltipText", (text, target) => {
+  ret.bullets.template.adapters.add("tooltipText", (text, target) => {
     let instant = target.dataItem.dataContext.instant;
     return dateFnsTz.formatInTimeZone(new Date(instant), 'Europe/Helsinki', "yyyy-MM-dd HH:mm") +
             " - " +
