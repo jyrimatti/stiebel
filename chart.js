@@ -237,6 +237,7 @@ let initChart = (dateFns, dateFnsTz) => {
   let yAxisFlag = mkYAxisFlag(root, chart);
   let yAxisPower = mkYAxisPower(root, chart);
   let xAxis = mkXAxis(root, chart);
+  xAxis.set('baseInterval', { timeUnit: 'hour', count: 1 });
 
   let mkSeriesTemp = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisTemp);
   let mkSeriesFlag = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisFlag);
@@ -261,10 +262,7 @@ let initChart = (dateFns, dateFnsTz) => {
   });
   */
 
-  return (seriesName, type, data, baseInterval) => {
-    if (baseInterval) {
-      xAxis.set('baseInterval', { timeUnit: baseInterval, count: 1 });
-    }
+  return (seriesName, type, data) => {
     let series = type === 'T' ? mkSeriesTemp(seriesName) : type === 'F' ? mkSeriesFlag(seriesName) : mkSeriesPower(seriesName);
     legend.data.setAll(legend.data.values.concat([series]));
     initSeries(dateFns, xAxis, series);
