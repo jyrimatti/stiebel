@@ -21,11 +21,45 @@ let mkChart = root =>
     })
   );
 
-let mkYAxis = (root, chart) => {
+let mkYAxisTemp = (root, chart) => {
   let yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
       autoZoom:        false,
-      calculateTotals: true,
+      min:             -40,
+      max:             100,
+      renderer:        am5xy.AxisRendererY.new(root, {
+        minGridDistance: 20
+      })
+    })
+  );
+  yAxis.get("renderer").labels.template.setAll({
+    fontSize: "0.75em"
+  });
+  return yAxis;
+};
+
+let mkYAxisFlag = (root, chart) => {
+  let yAxis = chart.yAxes.push(
+    am5xy.ValueAxis.new(root, {
+      autoZoom:        false,
+      min:             0,
+      max:             1,
+      renderer:        am5xy.AxisRendererY.new(root, {
+        minGridDistance: 20
+      })
+    })
+  );
+  yAxis.get("renderer").labels.template.setAll({
+    fontSize: "0.75em"
+  });
+  return yAxis;
+};
+
+let mkYAxisPower = (root, chart) => {
+  let yAxis = chart.yAxes.push(
+    am5xy.ValueAxis.new(root, {
+      autoZoom:        false,
+      min:             0,
       renderer:        am5xy.AxisRendererY.new(root, {
         minGridDistance: 20
       })
@@ -55,14 +89,12 @@ let mkXAxis = (root, chart) => {
 };
 
 let mkSeriesConstructor = (dateFns, dateFnsTz, root, chart, xAxis, yAxis) => name => {
-  let ret = am5xy.ColumnSeries.new(root, { 
+  let ret = am5xy.LineSeries.new(root, { 
     name:              name,
     xAxis:             xAxis,
     yAxis:             yAxis,
     valueYField:       "measurement",
     valueXField:       "instant",
-    stacked:           true,
-    calculateTotals:   true,
     maskBullets:       false,
     minBulletDistance: 25
   });
@@ -174,9 +206,9 @@ let mkNightRanges = (dateFns, dateFnsTz, xAxis) => interval => {
   });
 };
 
-let initData = (mainSeries) => data => {
+let initData = series => data => {
   data = data.sort((a,b) => a.instant - b.instant);
-  mainSeries.data.setAll(data);
+  series.data.setAll(data);
 };
 
 let mkRangeInitializer = (dateFns, dateFnsTz, root, chart, xAxis, showWeekendsF, showNightsF) => (data, includeNightsAndWeekends) => {
@@ -205,11 +237,11 @@ let mkRangeInitializer = (dateFns, dateFnsTz, root, chart, xAxis, showWeekendsF,
   }
 };
 
-let initMainSeries = (dateFns, xAxis, mainSeries) => {
-  mainSeries.setAll({
+let initSeries = (dateFns, xAxis, series) => {
+  series.setAll({
     fill:      am5.color("#ff8282"),
     heatRules: [{
-      target:         mainSeries.columns.template,
+      target:         series.columns.template,
       dataField:      "valueY",
       customFunction: (sprite, min, max, value) => {
         if (value < 0) {
@@ -220,27 +252,12 @@ let initMainSeries = (dateFns, xAxis, mainSeries) => {
       }
       }]
   });
-  mainSeries.columns.template.adapters.add('opacity', (_,target) =>
+  series.columns.template.adapters.add('opacity', (_,target) =>
     0.3 + Math.abs(2*target.dataItem.dataContext.centsPerKWh / 40));
-    mainSeries.events.once("datavalidated", ev =>
+    series.events.once("datavalidated", ev =>
     xAxis.zoomToDates(dateFns.addHours(new Date(), -24),
                       new Date(Math.max(...ev.target.data.values.map(x => x.instant)))));
 };
-
-let initTotals = (root, totals) => {
-  totals.bullets.push(function () {
-    return am5.Bullet.new(root, {
-      locationY: 1,
-      sprite:    am5.Label.new(root, {
-        text:         "{valueYSum}",
-        scale:        0.6,
-        centerY:      am5.p100,
-        centerX:      am5.p50,
-        populateText: true
-      })
-    });
-  });
-}
 
 let mkLegend = (root, chart) =>
   chart.plotContainer.children.push(am5.Legend.new(root, {
@@ -250,18 +267,19 @@ let mkLegend = (root, chart) =>
 let initChart = (dateFns, dateFnsTz) => {
   let root = mkRoot();
   let chart = mkChart(root);
-  let yAxis = mkYAxis(root, chart);
+  let yAxisTemp = mkYAxisTemp(root, chart);
+  let yAxisFlag = mkYAxisFlag(root, chart);
+  let yAxisPower = mkYAxisPower(root, chart);
   let xAxis = mkXAxis(root, chart);
 
-  let mkSeries = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxis);
-  let mainSeries = mkSeries("Spot");
-  
-  initMainSeries(dateFns, xAxis, mainSeries);
+  let mkSeriesTemp = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisTemp);
+  let mkSeriesFlag = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisFlag);
+  let mkSeriesPower = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisPower);
 
   let legend = mkLegend(root, chart);
-  legend.data.setAll([mainSeries]);
+  legend.data.setAll([]);
 
-  let showNightsButton = mkButton(root, legend, "Show/hide nights", '#0000ff');
+  /*let showNightsButton = mkButton(root, legend, "Show/hide nights", '#0000ff');
   let showWeekendsButton = mkButton(root, legend, "Show/hide weekends", '#000000');
 
   let initRanges = mkRangeInitializer(dateFns, dateFnsTz, root, chart, xAxis, () => showWeekendsButton.get('active'), () => showNightsButton.get('active'));
@@ -275,12 +293,16 @@ let initChart = (dateFns, dateFnsTz) => {
     ev.target.set('active', !ev.target.get('active'));
     initRanges(mainSeries.data.values, true);
   });
+  */
 
-  return (data, baseInterval) => {
+  return (seriesName, type, data, baseInterval) => {
     if (baseInterval) {
       xAxis.set('baseInterval', { timeUnit: baseInterval, count: 1 });
     }
-    initData(mainSeries)(data);
+    let series = type === 'T' ? mkSeriesTemp(seriesName) : type === 'F' ? mkSeriesFlag(seriesName) : mkSeriesPower(seriesName);
+    legend.data.setAll(legend.data.get().concat([series]));
+    initSeries(dateFns, xAxis, series);
+    initData(series)(data);
     initRanges(data, baseInterval == 'hour');
   };
 };
