@@ -232,7 +232,7 @@ let mkLegend = (root, chart) =>
 
 let initChart = (dateFns, dateFnsTz) => {
   let root = mkRoot();
-  let chart = mkChart(root);
+  window.chart = mkChart(root);
   let yAxisTemp = mkYAxisTemp(root, chart);
   let yAxisFlag = mkYAxisFlag(root, chart);
   let yAxisPower = mkYAxisPower(root, chart);
