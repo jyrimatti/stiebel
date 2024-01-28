@@ -54,21 +54,24 @@
         <option data-baseInterval="week"  value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%W', instant, 'unixepoch') ORDER BY instant DESC">Weekly maximums</option>
         <option data-baseInterval="month" value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m', instant, 'unixepoch') ORDER BY instant DESC">Monthly maximums</option>
       </select>
+
+      <input type="datetime-local" name="start" value="2024-01-01T00:00" />
+      <input type="datetime-local" name="end" value="2024-02-01T00:00" />
       
       <input type="hidden"
-             hx-sql="SELECT * FROM ACTUAL_TEMPERATURE_FEK WHERE instant BETWEEN strftime('%s', '{start}') AND strftime('%s', '{end}') ORDER BY instant DESC"
+             hx-sql="SELECT * FROM ACTUAL_TEMPERATURE_FEK WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
              hx-boost="true"
              hx-trigger="load"
              hx-on:htmx:before-on-load="init('ACTUAL_TEMPERATURE_FEK', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
 
       <input type="hidden"
-             hx-sql="SELECT * FROM OUTSIDE_TEMPERATURE WHERE instant BETWEEN strftime('%s', '{start}') AND strftime('%s', '{end}') ORDER BY instant DESC"
+             hx-sql="SELECT * FROM OUTSIDE_TEMPERATURE WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
              hx-boost="true"
              hx-trigger="load"
              hx-on:htmx:before-on-load="init('OUTSIDE_TEMPERATURE', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x), getSelectedBaseInterval(document))" />
 
       <input id="query"
-             value="SELECT * FROM system_heating_outside_temp WHERE instant BETWEEN strftime('%s', '{start}') AND strftime('%s', '{end}') ORDER BY instant DESC"
+             value="SELECT * FROM system_heating_outside_temp WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
              placeholder="your query here..."
              hx-sql=""
              hx-boost="true"
