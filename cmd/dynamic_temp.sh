@@ -65,7 +65,7 @@ if [ "$getset" = "Set" ]; then
     ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$effectiveTemp"
   fi
 else
-  if [ "$service" = "Switch" ]; then
+  if [ "$service" = "49" ]; then
     echo 0 # switch needs a 0/1 response
   else
     echo "$effectiveTemp"
