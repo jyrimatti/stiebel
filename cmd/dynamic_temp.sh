@@ -35,7 +35,7 @@ else
 
   # next hour will be more expensive -> pre-heat more the more expensive the next hour is.
   # next hour will be cheaper -> heat less.
-  effectiveTemp="$(echo "$targetTemp + ($next-$price)/5" | bc -l)"
+  effectiveTemp="$(echo "$targetTemp + ($next-($price))/5" | bc -l)"
 
   # Math.min($effectiveTemp, $maxTemp)
   if [ "$(echo "$effectiveTemp > $maxTemp" | bc -l)" = "1" ]; then
