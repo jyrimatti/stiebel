@@ -55,11 +55,7 @@ for x in FAULT_STATUS\
     dash ./cmd/modbus.sh "$x" Get | { read -r d; echo "[$stamp,$d]"; } | dash ./stiebel_convert.sh "$x"
 done;
 
-for x in VD_HEATING_DAY_HEAT\
-         VD_DHW_DAY_HEAT\
-         VD_HEATING_DAY_POWER\
-         VD_DHW_DAY_POWER\
-         VD_HEATING\
+for x in VD_HEATING\
          VD_DHW\
          VD_COOLING\
          NHZ_1\
@@ -67,6 +63,14 @@ for x in VD_HEATING_DAY_HEAT\
          NHZ_1_2\
     ; do
     dash ./cmd/modbus.sh "$x" Get | { read -r d; echo "[$stamp,$d]"; } | dash ./stiebel_convert.sh "$x"
+done;
+
+for x in VD_HEATING_DAY_HEAT\
+         VD_DHW_DAY_HEAT\
+         VD_HEATING_DAY_POWER\
+         VD_DHW_DAY_POWER\
+    ; do
+    dash ./cmd/modbus.sh "$x" Get | { read -r kwh; echo "[$stamp,$((1000*kwh))]"; } | dash ./stiebel_convert.sh "$x"
 done;
 
 for x in VD_HEATING_TOTAL_HEAT\
