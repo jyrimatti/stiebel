@@ -68,8 +68,7 @@ type = "TemperatureSensor"
 Name = "Ulkolämpötila"
 ConfiguredName = "Ulkolämpötila"
 [services.characteristics.CurrentTemperature]
-#cmd = "cd stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE" Does not give a value, for whatever reason...
-cmd = "cd stiebel; ./cmd/temp.sh"
+cmd = "cd stiebel; ./cmd/modbus.sh OUTSIDE_TEMPERATURE"
 minValue = -99
 
 

@@ -15,5 +15,7 @@ fi
 if [ "$getset" = "Set" ]; then
   ./stiebel_post.sh val103 $value
 else
-  ./stiebel_get.sh 4,0,2 | grep 'id="aval103' | sed 's/.*id="aval103"\s*value="\([^"]*\)".*/\1/'
+  #./stiebel_get.sh 4,0,2 | grep 'id="aval103' | sed 's/.*id="aval103"\s*value="\([^"]*\)".*/\1/'
+
+  ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 8 ))"; }
 fi

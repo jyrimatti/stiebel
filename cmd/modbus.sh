@@ -11,11 +11,10 @@ value=${5:-}
 . ./stiebel_objects.sh "$object"
 
 # ISG addresses are 1 based.
-OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 | sed 's/$/-1/' | bc)"
+OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 | cut -d/ -f 1 | sed 's/$/-1/' | bc)$(echo "$OBJECTID" | sed 's/[a-z]@[0-9]*//')"
 
 if [ "$getset" = "Get" ]; then
   ret=$(modbus "$STIEBEL_HOST" "$OBJECTID" | grep -v 'Parsed 0 registers definitions' | cut -d' ' -f2)
-  echo "$ret" | sed "s/$/*$MULTIPLIER/" | bc
 elif [ "$getset" = "Set" ]; then
   ret=$(modbus "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)" | grep -v 'Parsed 0 registers definitions' | cut -d' ' -f2)
 else
@@ -29,7 +28,9 @@ elif [ "$ret" = "32768" ]; then
   # The substitute value "32768 (0x8000H)" is issued for unavailable objects.
   echo "$OBJECTID: Unavailable object" >&2
   exit 2
-elif [ "$ret" = "36864" ]; then
+elif [ "$ret" = "36864" ] || [ "$ret" = "-28672" ]; then
   echo "$OBJECTID: OFF via 0x9000" >&2
   exit 2
+else
+  echo "$ret" | sed "s/$/*$MULTIPLIER/" | bc
 fi
