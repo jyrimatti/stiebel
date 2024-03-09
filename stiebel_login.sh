@@ -2,22 +2,30 @@
 #! nix-shell --pure --keep STIEBEL_USER --keep STIEBEL_PASSWORD --keep STIEBEL_HOST -i dash -I channel:nixos-23.11-small -p curl cacert flock findutils dash
 set -eu
 
-login() {
-    test -e "/tmp/stiebel-$USER" || mkdir -p "/tmp/stiebel-$USER"
-    # -i and --no-buffer to kill processing after cookie.
-    flock "/tmp/stiebel-$USER/lock-login" curl -i -4 --no-buffer --silent -d "make=send&user=$STIEBEL_USER&pass=$STIEBEL_PASSWORD" --cookie-jar "/tmp/stiebel-$USER/cookies" http://$STIEBEL_HOST/?s=0 | {
-        while read -r header; do
-            case $header in "Set-Cookie"*)
-                exit 0;; # stop when cookie received
-            esac
-        done
-    }
-}
+. ./stiebel_env.sh
 
-if [ ! -f "/tmp/stiebel-$USER/cookies" ]; then
-    login
-else
-    for i in $(find /tmp/stiebel-$USER/cookies -mmin +10); do
+outputfile="/tmp/stiebel-cookies"
+session_length_minutes=10
+
+(
+    flock 8
+
+    login() {
+        # -i and --no-buffer to kill processing after cookie.
+        curl -i -4 --no-buffer --silent -d "make=send&user=$STIEBEL_USER&pass=$STIEBEL_PASSWORD" --cookie-jar "$outputfile" http://$STIEBEL_HOST/?s=0 | {
+            while read -r header; do
+                case $header in "Set-Cookie"*)
+                    exit 0;; # stop when cookie received
+                esac
+            done
+        }
+    }
+
+    if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ]; then
         login
-    done
-fi
+    else
+        for i in $(find "$outputfile" -mmin +$session_length_minutes); do
+            login
+        done
+    fi
+) 8> "$outputfile.lock"
