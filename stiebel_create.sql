@@ -11,6 +11,7 @@ create table buffer                         (instant INTEGER PRIMARY KEY, measur
 create table ACTUAL_TEMPERATURE_FEK      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table SET_TEMPERATURE_FEK         (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table RELATIVE_HUMIDITY           (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table DEW_POINT_TEMPERATURE       (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table OUTSIDE_TEMPERATURE         (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table ACTUAL_TEMPERATURE_HK_1     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table SET_TEMPERATURE_HK_1_WPM    (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
@@ -46,30 +47,20 @@ create table ECO_TEMPERATURE_DHW         (instant INTEGER PRIMARY KEY, measureme
 create table SET_FLOW_TEMPERATURE_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table FLOW_TEMP_HYSTERESIS_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table SET_ROOM_TEMPERATURE_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table RESET                       (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table RESTART_ISG                 (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 
-create table POWER_OFF                   (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table FAULT_STATUS                (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table BUS_STATUS                  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table active_error                (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 
 create table VD_HEATING_DAY_HEAT         (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_HEATING_TOTAL_HEAT_KWH   (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_HEATING_TOTAL_HEAT_MWH   (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table VD_HEATING_TOTAL_HEAT       (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_DHW_DAY_HEAT             (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_DHW_TOTAL_HEAT_KWH       (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_DHW_TOTAL_HEAT_MWH       (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table NHZ_HEATING_TOTAL_HEAT_KWH  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table NHZ_HEATING_TOTAL_HEAT_MWH  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table NHZ_DHW_TOTAL_HEAT_KWH      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table NHZ_DHW_TOTAL_HEAT_MWH      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table VD_DHW_TOTAL_HEAT           (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table NHZ_HEATING_TOTAL_HEAT      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table NHZ_DHW_TOTAL_HEAT          (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_HEATING_DAY_POWER        (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_HEATING_TOTAL_POWER_KWH  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_HEATING_TOTAL_POWER_MWH  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table VD_HEATING_TOTAL_POWER      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_DHW_DAY_POWER            (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_DHW_TOTAL_POWER_KWH      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
-create table VD_DHW_TOTAL_POWER_MWH      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table VD_DHW_TOTAL_POWER          (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_HEATING                  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_DHW                      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table VD_COOLING                  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
