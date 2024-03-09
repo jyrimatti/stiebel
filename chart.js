@@ -3,7 +3,7 @@ let mkRoot = () => {
   root.setThemes([
     am5themes_Animated.new(root)
   ]);
-  root.numberFormatter.set("numberFormat", "#.00");
+  //root.numberFormatter.set("numberFormat", "#.00");
   return root;
 };
 
@@ -14,9 +14,15 @@ let mkChart = root =>
       panY:       false,
       wheelY:     "zoomX",
       pinchZoomX: true,
+      pinchZoomY: true,
+      maxTooltipDistance: -1,
       layout:     root.verticalLayout,
+      cursor:     am5xy.XYCursor.new(root, {}),
       scrollbarX: am5xy.XYChartScrollbar.new(root, {
         orientation: 'horizontal'
+      }),
+      scrollbarY: am5xy.XYChartScrollbar.new(root, {
+        orientation: 'vertical'
       })
     })
   );
@@ -35,6 +41,11 @@ let mkYAxisTemp = (root, chart) => {
   yAxis.get("renderer").labels.template.setAll({
     fontSize: "0.75em"
   });
+  yAxis.get("renderer").grid.template.setAll({
+    strokeWidth: 1,
+    stroke: am5.color(0xAAAAAA),
+  });
+  yAxis.set("tooltip", am5.Tooltip.new(root, {}));
   return yAxis;
 };
 
@@ -43,15 +54,22 @@ let mkYAxisFlag = (root, chart) => {
     am5xy.ValueAxis.new(root, {
       autoZoom:        true,
       min:             0,
-      max:             1,
+      max:             6,
+      strictMinMax:    true,
       renderer:        am5xy.AxisRendererY.new(root, {
-        minGridDistance: 20
+        minGridDistance: 20,
+        opposite:        true
       })
     })
   );
   yAxis.get("renderer").labels.template.setAll({
     fontSize: "0.75em"
   });
+  yAxis.get("renderer").grid.template.setAll({
+    strokeWidth: 1,
+    stroke: am5.color(0xAAAAAA),
+  });
+  yAxis.set("tooltip", am5.Tooltip.new(root, {}));
   return yAxis;
 };
 
@@ -68,18 +86,24 @@ let mkYAxisPower = (root, chart) => {
   yAxis.get("renderer").labels.template.setAll({
     fontSize: "0.75em"
   });
+  yAxis.get("renderer").grid.template.setAll({
+    strokeWidth: 1,
+    stroke: am5.color(0xAAAAAA),
+  });
+  //yAxis.set("tooltip", am5.Tooltip.new(root, {}));
   return yAxis;
 };
 
 let mkXAxis = (root, chart) => {
   let xAxis = chart.xAxes.push(
     am5xy.DateAxis.new(root, {
-      baseInterval: { timeUnit: "hour", count: 1 },
+      baseInterval: { timeUnit: "minute", count: 1 },
       renderer:     am5xy.AxisRendererX.new(root, {
         minGridDistance: 50
       })
     })
   );
+  xAxis.set("tooltip", am5.Tooltip.new(root, {}));
   xAxis.get("renderer").labels.template.setAll({
     fontSize:      "0.75em",
     location:      0,
@@ -93,11 +117,31 @@ let mkSeriesConstructor = (dateFns, dateFnsTz, root, chart, xAxis, yAxis) => nam
     name:              name,
     xAxis:             xAxis,
     yAxis:             yAxis,
+    baseAxis:          yAxis,
     valueYField:       "measurement",
     valueXField:       "instant",
-    tooltipText:       "{measurement}\n{instant}",
-    maskBullets:       false,
-    minBulletDistance: 25
+    visible:           false,
+    minDistance:       10,
+    tooltip: am5.Tooltip.new(root, {
+      labelText: "{name}\n{measurement} @ {instant.formatDate()}"
+    }),
+    userData:          { data: [] }
+  });
+  /*ret.bullets.push(root => {
+    return am5.Bullet.new(root, {
+      sprite: am5.Circle.new(root, {
+        radius: 2,
+        fill: ret.get("fill"),
+        tooltipText: "{name}\n{measurement}\n{instant.formatDate('yyyy-MM-dd HH:mm')}"
+      }),
+    });
+  });*/
+  ret.on('visible', visible => {
+    if (visible) {
+      ret.data.setAll(ret.get('userData').data);
+    } else {
+      ret.data.setAll([]);
+    }
   });
   chart.series.push(ret);
   
@@ -190,7 +234,7 @@ let mkNightRanges = (dateFns, dateFnsTz, xAxis) => interval => {
 
 let initData = series => data => {
   data = data.sort((a,b) => a.instant - b.instant);
-  series.data.setAll(data);
+  series.get("userData").data = data;
 };
 
 let mkRangeInitializer = (dateFns, dateFnsTz, root, chart, xAxis, showWeekendsF, showNightsF) => (data, includeNightsAndWeekends) => {
@@ -225,21 +269,33 @@ let initSeries = (dateFns, xAxis, series) => {
                         new Date(Math.max(...ev.target.data.values.map(x => x.instant)))));
 };
 
-let mkLegend = (root, chart) =>
-  chart.plotContainer.children.push(am5.Legend.new(root, {
-    layout: root.verticalLayout
+let mkLegend = (root, chart) => {
+  let legend = chart.children.push(am5.Legend.new(root, {
+    layout: root.gridLayout
   }));
+  legend.markers.template.setAll({
+    forceHidden: true
+  });
+  legend.labels.template.setAll({
+    fontSize: 8,
+    fontWeight: "300"
+  });
+  legend.valueLabels.template.set("forceHidden", true);
+  return legend;
+}
 
 let initChart = (dateFns, dateFnsTz) => {
   let root = mkRoot();
   window.chart = mkChart(root);
   let yAxisTemp = mkYAxisTemp(root, chart);
+  let yAxisRelative = yAxisTemp;
   let yAxisFlag = mkYAxisFlag(root, chart);
   let yAxisPower = mkYAxisPower(root, chart);
   let xAxis = mkXAxis(root, chart);
 
   let mkSeriesTemp = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisTemp);
   let mkSeriesFlag = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisFlag);
+  let mkSeriesRelative = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisRelative);
   let mkSeriesPower = mkSeriesConstructor(dateFns, dateFnsTz, root, chart, xAxis, yAxisPower);
 
   let legend = mkLegend(root, chart);
@@ -262,8 +318,11 @@ let initChart = (dateFns, dateFnsTz) => {
   */
 
   return (seriesName, type, data) => {
-    let series = type === 'T' ? mkSeriesTemp(seriesName) : type === 'F' ? mkSeriesFlag(seriesName) : mkSeriesPower(seriesName);
-    legend.data.setAll(legend.data.values.concat([series]));
+    let series = type === 'T' ? mkSeriesTemp(seriesName) : type === 'R' ? mkSeriesRelative(seriesName) : type === 'F' ? mkSeriesFlag(seriesName) : mkSeriesPower(seriesName);
+    let all = legend.data.values.concat([series]);
+    all.sort((a,b) => a.get('name') < b.get('name') ? -1 : 1);
+    legend.data.setAll(all);
+    series.hide();
     initSeries(dateFns, xAxis, series);
     initData(series)(data);
     //initRanges(data, baseInterval == 'hour');

@@ -52,7 +52,7 @@
   <a onclick="window.page = 'swegon';  window.reset();" class="last">swegon</a>
 </div>
 <div id="smallgraph" class="plot"></div>
-<input id="query" size="150" value="select * from system_heating_outside_temp where instant between {start} and {end}" placeholder="your query here..." />
+<input id="query" size="150" value="select * from OUTSIDE_TEMPERATURE where instant between {start} and {end}" placeholder="your query here..." />
 
 <script type="text/javascript">
   let BEGIN = new Date('2015-07-01T00:00:00Z');
@@ -328,41 +328,41 @@
       getAndDraw('mixer_pump');
       getAndDraw('htg_circ_pump');
       getAndDraw('compressor');
-      getAndDraw('system_source_temp');
-      getAndDraw('system_source_pressure');
+      getAndDraw('SOURCE_TEMPERATURE');
+      getAndDraw('SOURCE_PRESSURE');
       getAndDraw('buffer');
     }
 
     if (onPage('dhw')) {
       getAndDraw('dhw_valve');
-      getAndDraw('system_dhw_actual_temp');
-      getAndDraw('power_dhw_day');
-      getAndDraw('heat_dhw_day');
-      justDraw('cop_dhw_day', cop('power_dhw_day', 'heat_dhw_day'), {yaxis: {min: 0, max: 5.5}}, 0);
-      getAndDraw('power_dhw_total');
-      getAndDraw('heat_dhw_total');
-      justDraw('cop_dhw_total', cop('power_dhw_total', 'heat_dhw_total'), {yaxis: {min: 0, max: 5.5}}, 1);
+      getAndDraw('ACTUAL_TEMPERATURE_DHW');
+      getAndDraw('VD_DHW_DAY_POWER');
+      getAndDraw('VD_DHW_DAY_HEAT');
+      justDraw('cop_dhw_day', cop('VD_DHW_DAY_POWER', 'VD_DHW_DAY_HEAT'), {yaxis: {min: 0, max: 5.5}}, 0);
+      getAndDraw('VD_DHW_TOTAL_POWER');
+      getAndDraw('VD_DHW_TOTAL_HEAT');
+      justDraw('cop_dhw_total', cop('VD_DHW_TOTAL_POWER', 'VD_DHW_TOTAL_HEAT'), {yaxis: {min: 0, max: 5.5}}, 1);
     }
 
     if (onPage('heating')) {
-      getAndDraw('power_heating_day');
-      getAndDraw('heat_heating_day');
-      justDraw('cop_heating_day', cop('power_heating_day', 'heat_heating_day'), {yaxis: {min: 0, max: 8}}, 2);
-      getAndDraw('power_heating_total');
-      getAndDraw('heat_heating_total');
-      justDraw('cop_heating_total', cop('power_heating_total', 'heat_heating_total'), {yaxis: {min: 0, max: 8}}, 3);
+      getAndDraw('VD_HEATING_DAY_POWER');
+      getAndDraw('VD_HEATING_DAY_HEAT');
+      justDraw('cop_heating_day', cop('VD_HEATING_DAY_POWER', 'VD_HEATING_DAY_HEAT'), {yaxis: {min: 0, max: 8}}, 2);
+      getAndDraw('VD_HEATING_TOTAL_POWER');
+      getAndDraw('VD_HEATING_TOTAL_HEAT');
+      justDraw('cop_heating_total', cop('VD_HEATING_TOTAL_POWER', 'VD_HEATING_TOTAL_HEAT'), {yaxis: {min: 0, max: 8}}, 3);
     }
 
     if (onPage('system')) {
-      getAndDraw('system_heating_outside_temp');
-      getAndDraw('system_actual_buffer_temp');
-      getAndDraw('system_heating_actual_temp_hc1');
-      getAndDraw('system_heating_actual_temp_hc2');
-      getAndDraw('system_act_temp_hc2');
-      getAndDraw('system_rel_humidity');
-      getAndDraw('system_taupunkttemp');
-      getAndDraw('system_actual_flow_temp');
-      getAndDraw('system_actual_return_temp');
+      getAndDraw('OUTSIDE_TEMPERATURE');
+      getAndDraw('ACTUAL_BUFFER_TEMPERATURE');
+      getAndDraw('ACTUAL_TEMPERATURE_HK_1');
+      getAndDraw('ACTUAL_TEMPERATURE_HK_2');
+      getAndDraw('ACTUAL_TEMPERATURE_FEK');
+      getAndDraw('RELATIVE_HUMIDITY');
+      getAndDraw('DEW_POINT_TEMPERATURE');
+      getAndDraw('ACTUAL_FLOW_TEMPERATURE_WP');
+      getAndDraw('ACTUAL_RETURN_TEMPERATURE');
     }
 
     if (onPage('swegon')) {

@@ -74,7 +74,7 @@ Then create somewhere a symlink named `nix-shell` pointing to just the regular s
 
 after which you can override nix-shell with PATH:
 ```
-PATH=~/.local/nix-override:$PATH ./cmd/temp.sh
+PATH=~/.local/nix-override:$PATH ./cmd/cooling.sh
 ```
 
 Cron

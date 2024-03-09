@@ -10,12 +10,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="mobile-web-app-capable" content="yes"/>
     
-    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/index.js"></script>
-    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/xy.js"></script>
-    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.4.1/themes/Animated.js"></script>
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.7.7/index.js"></script>
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.7.7/xy.js"></script>
+    <script crossorigin src="https://cdn.amcharts.com/lib/version/5.7.7/themes/Animated.js"></script>
     <script crossorigin src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script crossorigin src="https://unpkg.com/htmx.org@1.9.6/dist/ext/client-side-templates.js"></script>
     <script crossorigin src="https://unpkg.com/@popperjs/core@2"></script>
     <script crossorigin src="https://unpkg.com/tippy.js@6"></script>
+    <script crossorigin src="https://unpkg.com/mustache@latest"></script>
     <script src="web/dist/sqlite-wasm-http-main.js"></script>
     <script src="sqlite.js"></script>
     <script src="chart.js"></script>
@@ -24,7 +26,7 @@
     <link crossorigin rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body hx-ext="sqlite" hx-db="http:/stiebel/stiebel.db">
+  <body hx-ext="client-side-templates,sqlite" hx-db="http:/stiebel/stiebel.db">
     <script>
       import('https://cdn.skypack.dev/date-fns@2.30.0').then(dateFns => {
         import('https://cdn.skypack.dev/date-fns-tz@2.0.0').then(dateFnsTz => {
@@ -36,6 +38,19 @@
         });
       });
     </script>
+
+    <template id="graph">
+      {{#data}}
+      <input type="hidden"
+            hx-sql="SELECT * FROM {{graph}} WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
+            hx-boost="true"
+            hx-trigger="load"
+            hx-include="[name='start'],[name='end']"
+            hx-on:htmx:before-on-load="init('{{graph}}', '{{graph}}'.startsWith('RELAT') ? 'R' : '{{graph}}'.endsWith('WH') ? 'P' : '{{graph}}'.endsWith('MODE') || '{{graph}}'.endsWith('OFF') || '{{graph}}'.endsWith('STATUS') || '{{graph}}'.endsWith('RESET') ? 'F' : 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
+      {{/data}}
+    </template>
+
+    <input type="hidden" hx-sql="SELECT name AS graph FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%' AND name = upper(name)" hx-trigger="load" hx-boost="true" hx-target="#graphs" mustache-array-template="graph" />
 
     <header>
       <select id="template" onchange="htmx.find('#query').value = this.value; htmx.trigger('#query', 'change');">
@@ -55,31 +70,19 @@
         <option data-baseInterval="month" value="SELECT MAX(centsPerKWh) centsPerKWh, instant FROM spot group by strftime('%Y-%m', instant, 'unixepoch') ORDER BY instant DESC">Monthly maximums</option>
       </select>
 
-      <input type="datetime-local" name="start" value="2024-01-01T00:00" />
-      <input type="datetime-local" name="end" value="2024-02-01T00:00" />
+      <input class="bind" type="datetime-local" name="start" value="2024-01-01T00:00" />
+      <input class="bind" type="datetime-local" name="end" value="2024-02-01T00:00" />
       
-      <input type="hidden"
-             hx-sql="SELECT * FROM ACTUAL_TEMPERATURE_FEK WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
-             hx-boost="true"
-             hx-trigger="revealed"
-             hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('ACTUAL_TEMPERATURE_FEK', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
-
-      <input type="hidden"
-             hx-sql="SELECT * FROM OUTSIDE_TEMPERATURE WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
-             hx-boost="true"
-             hx-trigger="revealed"
-             hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('OUTSIDE_TEMPERATURE', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
+      <div id="graphs"></div>
 
       <input id="query"
-             value="SELECT * FROM system_heating_outside_temp WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
+             value="SELECT * FROM outside_temp WHERE instant BETWEEN strftime('%s', $start) AND strftime('%s', $end) ORDER BY instant DESC"
              placeholder="your query here..."
              hx-sql=""
              hx-boost="true"
              hx-trigger="change"
              hx-include="[name='start'],[name='end']"
-             hx-on:htmx:before-on-load="init('system_heating_outside_temp', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
+             hx-on:htmx:before-on-load="init('outside_temp', 'T', event.detail.xhr.response.map(x => x.instant ? {...x, instant: x.instant*1000} : x))" />
     </header>
     <section class="container">
       <div id="chart"></div>
