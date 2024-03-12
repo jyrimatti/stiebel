@@ -2,9 +2,8 @@
 #! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert gnused
 set -eu
 
-getset="$1"
+getset="${1:-}"
 service="${2:-}"
-value="${4:-}"
 
 targetRoomTemp=21               # target room temperature
 targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
@@ -47,7 +46,7 @@ else
   fi
 
   # increase temperature if room is colder than target
-  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/fektemp.sh)}"
+  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
   if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
     effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
   fi
