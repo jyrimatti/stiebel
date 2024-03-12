@@ -16,7 +16,8 @@ OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 |
 if [ "$getset" = "Get" ]; then
   ret=$(modbus "$STIEBEL_HOST" "$OBJECTID" | grep -v 'Parsed 0 registers definitions' | cut -d' ' -f2)
 elif [ "$getset" = "Set" ]; then
-  ret=$(modbus "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)" | grep -v 'Parsed 0 registers definitions' | cut -d' ' -f2)
+  modbus "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)" | grep -v 'Parsed 0 registers definitions' | cut -d' ' -f2
+  ret=1
 else
   exit 1
 fi
@@ -32,5 +33,5 @@ elif [ "$ret" = "36864" ] || [ "$ret" = "-28672" ]; then
   echo "$OBJECTID: OFF via 0x9000" >&2
   exit 2
 else
-  echo "$ret" | sed "s/$/*$MULTIPLIER/" | bc
+  echo "$ret" | sed "s/$/*$MULTIPLIER/" | bc | sed 's/^\./0./' | sed 's/^-\./-0./' 
 fi
