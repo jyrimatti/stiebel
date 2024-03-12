@@ -47,6 +47,7 @@ create table ECO_TEMPERATURE_DHW         (instant INTEGER PRIMARY KEY, measureme
 create table SET_FLOW_TEMPERATURE_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table FLOW_TEMP_HYSTERESIS_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table SET_ROOM_TEMPERATURE_AC     (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
+create table SG_READY_OPERATING_STATE    (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 
 create table FAULT_STATUS                (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table BUS_STATUS                  (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);

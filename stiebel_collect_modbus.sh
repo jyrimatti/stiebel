@@ -45,6 +45,7 @@ for x in OPERATING_MODE\
          SET_FLOW_TEMPERATURE_AC\
          FLOW_TEMP_HYSTERESIS_AC\
          SET_ROOM_TEMPERATURE_AC\
+         SG_READY_OPERATING_STATE\
     ; do
     dash ./cmd/modbus.sh "$x" Get | { read -r d; echo "[$stamp,$d]"; } | dash ./stiebel_convert.sh "$x"
 done;
