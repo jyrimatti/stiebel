@@ -353,4 +353,9 @@ case $object in
   VD_DHW_HP5)                     export OBJECTID=i@3653; export MULTIPLIER=1    ;; # h
   VD_HEATING_HP6)                 export OBJECTID=i@3654; export MULTIPLIER=1    ;; # h
   VD_DHW_HP6)                     export OBJECTID=i@3655; export MULTIPLIER=1    ;; # h
+
+  SG_READY_OPERATING_STATE)       export OBJECTID=i@5001; export MULTIPLIER=1    ;; # 1=min, 2=std, 3=accel, 4=max
+
+  SG_READY_INPUT_1)               export OBJECTID=h@4002; export MULTIPLIER=1   ;;
+  SG_READY_INPUT_2)               export OBJECTID=h@4003; export MULTIPLIER=1   ;;
 esac

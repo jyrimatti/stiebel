@@ -125,3 +125,33 @@ ConfiguredName = "Varaajan asetuslämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh SET_BUFFER_TEMPERATURE"
 minValue = -99
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "SG standard"
+ConfiguredName = "SG standard"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/sg_standard.sh"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "SG accelerated"
+ConfiguredName = "SG accelerated"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/sg_accelerated.sh"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "SG maximum"
+ConfiguredName = "SG maximum"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/sg_maximum.sh"
