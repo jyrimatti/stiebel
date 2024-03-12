@@ -5,10 +5,14 @@ set -eu
 getset=${1:-}
 
 if [ "$getset" = "Set" ]; then
-    ./cmd/modbus.sh SG_READY_INPUT_1 Set '' '' 0
-    ./cmd/modbus.sh SG_READY_INPUT_2 Set '' '' 0
+  if [ "$(dash ./cmd/modbus.sh SG_READY_INPUT_1 Get)" != 0 ]; then
+    dash ./cmd/modbus.sh SG_READY_INPUT_1 Set '' '' 0
+  fi
+  if [ "$(dash ./cmd/modbus.sh SG_READY_INPUT_2 Get)" != 0 ]; then
+    dash ./cmd/modbus.sh SG_READY_INPUT_2 Set '' '' 0
+  fi
 else
-  if [ "$(./cmd/modbus.sh SG_READY_OPERATING_STATE Get)" = 2 ]; then
+  if [ "$(dash ./cmd/modbus.sh SG_READY_OPERATING_STATE Get)" = 2 ]; then
     echo 1
   else
     echo 0

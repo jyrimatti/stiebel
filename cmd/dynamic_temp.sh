@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert gnused
+#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert gnused "pkgs.callPackage ./modbus_cli.nix {}"
 set -eu
 
 getset="${1:-}"
@@ -46,7 +46,7 @@ else
   fi
 
   # increase temperature if room is colder than target
-  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
+  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
   if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
     effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
   fi
@@ -55,13 +55,21 @@ fi
 effectiveTemp="$(printf %.1f "$effectiveTemp")"
 
 if [ "$getset" = "Set" ]; then
-  ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
-  ./cmd/modbus.sh ECO_TEMPERATURE_HC1     Set '' '' "$effectiveTemp"
+  if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Get)" != "$effectiveTemp" ]; then
+    dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
+  fi
+  if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Get)" != "$effectiveTemp" ]; then
+    dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
+  fi
 
   if [ "$(echo "$effectiveTemp < $targetPumpTemp" | bc -l)" = "1" ]; then
     # have to lower both circuits, otherwise buffer will still heat up too much
-    ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
-    ./cmd/modbus.sh ECO_TEMPERATURE_HC2     Set '' '' "$effectiveTemp"
+    if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
+      dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
+    fi
+    if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
+      dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
+    fi
   fi
 else
   if [ "$service" = "49" ]; then
