@@ -149,7 +149,7 @@ case $object in
   RESTART_ISG)                    export OBJECTID=h@1521; export MULTIPLIER=1    ;;
 
 # Block 3: System status (Read input register)
-  OPERATING_STATUS)               export OBJECTID=i@2501; export MULTIPLIER=1    ;; #
+  OPERATING_STATUS)               export OBJECTID=i@2501/h; export MULTIPLIER=1    ;; #
   POWER_OFF)                      export OBJECTID=i@2502; export MULTIPLIER=1    ;; #
   OPERATING_STATUS_WPM)           export OBJECTID=i@2503; export MULTIPLIER=1    ;; #
   FAULT_STATUS)                   export OBJECTID=i@2504; export MULTIPLIER=1    ;; #
