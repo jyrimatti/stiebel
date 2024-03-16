@@ -6,7 +6,7 @@ object=$1
 getset=$2
 value=${5:-}
 
-if [ -z "$IN_NIX_SHELL" ]; then
+if [ -z "${IN_NIX_SHELL:-}" ]; then
   cmd="modbus_cli"
 else
   cmd="python ./modbus_cli_optimized.sh"
