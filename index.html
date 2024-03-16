@@ -49,7 +49,8 @@
   <a onclick="window.page = 'dhw';     window.reset();">dhw</a>
   <a onclick="window.page = 'heating'; window.reset();">heating</a>
   <a onclick="window.page = 'system';  window.reset();">system</a>
-  <a onclick="window.page = 'swegon';  window.reset();" class="last">swegon</a>
+  <a onclick="window.page = 'swegon';  window.reset();">swegon</a>
+  <a onclick="window.page = 'huawei';  window.reset();" class="last">huawei</a>
 </div>
 <div id="smallgraph" class="plot"></div>
 <input id="query" size="150" value="select * from OUTSIDE_TEMPERATURE where instant between {start} and {end}" placeholder="your query here..." />
@@ -373,6 +374,11 @@
       getAndDraw('ah');
       getAndDraw('supplyFan');
       getAndDraw('exhaustFan');
+    }
+
+    if (onPage('huawei')) {
+      getAndDraw('TOTAL_ACTIVE_POWER');
+      getAndDraw('TOTAL_YIELD');
     }
   };
 
