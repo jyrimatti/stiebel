@@ -14,9 +14,9 @@ value=${5:-}
 OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 | cut -d/ -f 1 | sed 's/$/-1/' | bc)$(echo "$OBJECTID" | sed 's/[a-z]@[0-9]*//')"
 
 if [ "$getset" = "Get" ]; then
-  ret=$(./modbus_cli_optimized.py "$STIEBEL_HOST" "$OBJECTID")
+  ret=$(python ./modbus_cli_optimized.sh "$STIEBEL_HOST" "$OBJECTID")
 elif [ "$getset" = "Set" ]; then
-  ./modbus_cli_optimized.py "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
+  python ./modbus_cli_optimized.sh "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
   ret=1
 else
   exit 1

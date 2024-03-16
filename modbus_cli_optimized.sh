@@ -1,4 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env nix-shell
+#! nix-shell --pure -i python -I channel:nixos-23.11-small -p "pkgs.callPackage ./modbus_cli.nix {}"
 
 # OPTIMIZED: stripped away some useless stuff, like colouring and arg parsing
 
