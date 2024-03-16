@@ -8,17 +8,18 @@ minutes="${CURL_CACHED_MINUTES:-1}"
 
 outputfile="${XDG_RUNTIME_DIR:-/tmp}/$(basename "$PWD")/$(echo -n "$url" | tr -c '[:alnum:]' '_')"
 
-for i in $(find "$outputfile" -mmin -$minutes); do
-    if [ -s "$outputfile" ]; then
+if [ -f "$outputfile" ] && [ -s "$outputfile" ]; then
+    for i in $(find "$outputfile" -mmin -$minutes); do
         cat "$outputfile"
         exit 0
-    fi
-done
+    done
+fi
 
 (
     flock 8
 
-    test -e "$(dirname "$outputfile")" || mkdir -p "$(dirname "$outputfile")"
+    dir="$(dirname "$outputfile")"
+    test -e "$dir" || mkdir -p "$dir"
 
     fetch() {
         curl --no-progress-meter -L -o "$outputfile" "$url" $*
