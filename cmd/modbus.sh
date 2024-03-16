@@ -6,6 +6,12 @@ object=$1
 getset=$2
 value=${5:-}
 
+if [ -z "$IN_NIX_SHELL" ]; then
+  cmd="modbus_cli"
+else
+  cmd="python ./modbus_cli_optimized.sh"
+fi
+
 . ./stiebel_env.sh
 
 . ./stiebel_objects.sh "$object"
@@ -14,9 +20,9 @@ value=${5:-}
 OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 | cut -d/ -f 1 | sed 's/$/-1/' | bc)$(echo "$OBJECTID" | sed 's/[a-z]@[0-9]*//')"
 
 if [ "$getset" = "Get" ]; then
-  ret=$(python ./modbus_cli_optimized.sh "$STIEBEL_HOST" "$OBJECTID")
+  ret=$($cmd "$STIEBEL_HOST" "$OBJECTID")
 elif [ "$getset" = "Set" ]; then
-  python ./modbus_cli_optimized.sh "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
+  $cmd "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
   ret=1
 else
   exit 1
