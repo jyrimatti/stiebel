@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert gnused "pkgs.callPackage ./modbus_cli.nix {}"
+#! nix-shell --pure --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert coreutils "pkgs.callPackage ./modbus_cli.nix {}"
 set -eu
 
 getset="${1:-}"
@@ -13,8 +13,12 @@ nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
 nightStart=22                   # night time starts at this hour
 nightEnd=7                      # night time ends at this hour
 
-currentPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24' | sed 's/.*,//g')"
-nextPrice="$(curl -s 'https://spot.lahteenmaki.net/current.csv?tax=24&delta=1' | sed 's/.*,//g')"
+prices="$(curl --no-progress-meter 'https://spot.lahteenmaki.net/current.csv?tax=24' 'https://spot.lahteenmaki.net/current.csv?tax=24&delta=1'\
+  | cut -d, -f2\
+  | tr '\n' ' ')"
+
+currentPrice="$(echo "$prices" | cut -d' ' -f1)"
+nextPrice="$(echo "$prices" | cut -d' ' -f2)"
 
 if [ "$currentPrice" = '' ] || [ "$nextPrice" = '' ]; then
   # some error fetching prices -> keep normal temperature
