@@ -15,11 +15,11 @@ if [ -f "$outputfile" ] && [ -s "$outputfile" ]; then
     done
 fi
 
+dir="$(dirname "$outputfile")"
+test -e "$dir" || mkdir -p "$dir"
+
 (
     flock 8
-
-    dir="$(dirname "$outputfile")"
-    test -e "$dir" || mkdir -p "$dir"
 
     fetch() {
         curl --no-progress-meter -L -o "$outputfile" "$url" $*
