@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnused dash bc netcat "pkgs.callPackage ./modbus_cli.nix {}"
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnused dash bc netcat xxd "pkgs.callPackage ./modbus_cli.nix {}"
 set -eu
 
 object=$1
@@ -39,11 +39,9 @@ esac
 
 if [ "$getset" = "Get" ]; then
   #ret=$($cmd "$STIEBEL_HOST" "$OBJECTID")
-  trap "true" INT
   ret=$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")
 elif [ "$getset" = "Set" ]; then
   #$cmd "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
-  trap "true" INT
   dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type" "$value"
   ret=1
 else
