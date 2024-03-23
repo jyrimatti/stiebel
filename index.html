@@ -50,7 +50,8 @@
   <a onclick="window.page = 'heating'; window.reset();">heating</a>
   <a onclick="window.page = 'system';  window.reset();">system</a>
   <a onclick="window.page = 'swegon';  window.reset();">swegon</a>
-  <a onclick="window.page = 'huawei';  window.reset();" class="last">huawei</a>
+  <a onclick="window.page = 'huawei';  window.reset();">huawei</a>
+  <a onclick="window.page = 'homewizard'; window.reset();" class="last">homewizard</a>
 </div>
 <div id="smallgraph" class="plot"></div>
 <input id="query" size="150" value="select * from OUTSIDE_TEMPERATURE where instant between {start} and {end}" placeholder="your query here..." />
@@ -207,7 +208,10 @@
       console.log("Querying " + name + " for " + JSON.stringify(interval));
       var start = (Math.floor(interval.start.getTime()/1000));
       var end = Math.floor((interval.end.getTime()/1000));
-      (onPage('swegon') ? ouman(queryF(start, end)) : onPage('huawei') ? huawei(queryF(start, end)) : stiebel(queryF(start, end)))
+      (onPage('swegon') ? ouman(queryF(start, end)) :
+       onPage('huawei') ? huawei(queryF(start, end)) :
+       onPage('homewizard') ? homewizard(queryF(start, end)) :
+       stiebel(queryF(start, end)))
         .then(function(data) {
           if (data == "") {
             console.log("Got empty data for " + name);
@@ -379,6 +383,24 @@
     if (onPage('huawei')) {
       getAndDraw('TOTAL_ACTIVE_POWER');
       getAndDraw('TOTAL_YIELD');
+    }
+
+    if (onPage('homewizard')) {
+      getAndDraw('active_current_l1_a');
+      getAndDraw('active_current_l2_a');
+      getAndDraw('active_current_l3_a');
+      getAndDraw('active_power_l1_w');
+      getAndDraw('active_power_l2_w');
+      getAndDraw('active_power_l3_w');
+      getAndDraw('active_power_w');
+      getAndDraw('active_voltage_l1_v');
+      getAndDraw('active_voltage_l2_v');
+      getAndDraw('active_voltage_l3_v');
+      getAndDraw('total_power_export_kwh');
+      getAndDraw('total_power_export_t1_kwh');
+      getAndDraw('total_power_import_kwh');
+      getAndDraw('total_power_import_t1_kwh');
+      getAndDraw('wifi_strength');
     }
   };
 
