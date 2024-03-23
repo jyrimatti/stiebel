@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnused dash bc netcat xxd "pkgs.callPackage ./modbus_cli.nix {}"
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnused dash bc netcat xxd
 set -eu
 
 object=$1
@@ -10,11 +10,6 @@ value=${5:-}
 
 . ./stiebel_objects.sh "$object"
 
-#if [ -z "${IN_NIX_SHELL:-}" ]; then
-#  cmd="modbus -S"
-#else
-#  cmd="python ./modbus_cli_optimized.sh"
-#fi
 case $OBJECTID in
   h*)
     fcode=3
@@ -34,14 +29,9 @@ case ${OBJECTID##*/} in
     ;;
 esac
 
-# ISG addresses are 1 based.
-#OBJECTID="$(echo "$OBJECTID" | cut -d@ -f 1)@$(echo "$OBJECTID" | cut -d@ -f 2 | cut -d/ -f 1 | sed 's/$/-1/' | bc)$(echo "$OBJECTID" | sed 's/[a-z]@[0-9]*//')"
-
 if [ "$getset" = "Get" ]; then
-  #ret=$($cmd "$STIEBEL_HOST" "$OBJECTID")
   ret=$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")
 elif [ "$getset" = "Set" ]; then
-  #$cmd "$STIEBEL_HOST" "$OBJECTID"="$(echo "$value" | sed "s/$/\/$MULTIPLIER/" | bc)"
   dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value"
   ret=1
 else
@@ -59,5 +49,5 @@ elif [ "$ret" = "36864" ] || [ "$ret" = "-28672" ]; then
   echo "$OBJECTID: OFF via 0x9000" >&2
   exit 2
 else
-  echo "$ret" #| sed "s/$/*$MULTIPLIER/" | bc | sed 's/^\./0./' | sed 's/^-\./-0./' 
+  echo "$ret"
 fi

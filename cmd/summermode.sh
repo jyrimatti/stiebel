@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash xxd netcat
 set -eu
 
 getset=${1:-}
@@ -15,7 +15,5 @@ fi
 if [ "$getset" = "Set" ]; then
   ./stiebel_post.sh val103 $value
 else
-  #./stiebel_get.sh 4,0,2 | grep 'id="aval103' | sed 's/.*id="aval103"\s*value="\([^"]*\)".*/\1/'
-
-  ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 8 ))"; }
+  dash ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 8 ))"; }
 fi
