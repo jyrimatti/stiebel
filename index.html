@@ -51,7 +51,9 @@
   <a onclick="window.page = 'system';  window.reset();">system</a>
   <a onclick="window.page = 'swegon';  window.reset();">swegon</a>
   <a onclick="window.page = 'huawei';  window.reset();">huawei</a>
-  <a onclick="window.page = 'homewizard'; window.reset();" class="last">homewizard</a>
+  <a onclick="window.page = 'homewizard'; window.reset();">homewizard</a>
+  <a onclick="window.page = 'ping'; window.reset();">ping</a>
+  <a onclick="window.page = 'speed'; window.reset();" class="last">speed</a>
 </div>
 <div id="smallgraph" class="plot"></div>
 <input id="query" size="150" value="select * from OUTSIDE_TEMPERATURE where instant between {start} and {end}" placeholder="your query here..." />
@@ -211,6 +213,8 @@
       (onPage('swegon') ? ouman(queryF(start, end)) :
        onPage('huawei') ? huawei(queryF(start, end)) :
        onPage('homewizard') ? homewizard(queryF(start, end)) :
+       onPage('ping') ? ping(queryF(start, end)) :
+       onPage('speed') ? speed(queryF(start, end)) :
        stiebel(queryF(start, end)))
         .then(function(data) {
           if (data == "") {
@@ -401,6 +405,17 @@
       getAndDraw('total_power_import_kwh');
       getAndDraw('total_power_import_t1_kwh');
       getAndDraw('wifi_strength');
+    }
+
+    if (onPage('ping')) {
+      getAndDraw('min');
+      getAndDraw('avg');
+      getAndDraw('max');
+      getAndDraw('stddev');
+    }
+
+    if (onPage('speed')) {
+      getAndDraw('speed');
     }
   };
 

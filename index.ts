@@ -31,3 +31,5 @@ async function load(db: string, query: string) {
 (window as any).ouman = (query: string) => load('ouman', query);
 (window as any).huawei = (query: string) => load('huawei', query);
 (window as any).homewizard = (query: string) => load('homewizard', query);
+(window as any).ping = (query: string) => load('ping', query);
+(window as any).speed = (query: string) => load('speed', query);
