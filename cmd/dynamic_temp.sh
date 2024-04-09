@@ -60,25 +60,25 @@ effectiveTemp="$(printf %.1f "$effectiveTemp")"
 
 if [ "$getset" = "Set" ]; then
   if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Get)" != "$effectiveTemp" ]; then
-    dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
+    response="$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC1 Set '' '' "$effectiveTemp")"
   fi
   if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Get)" != "$effectiveTemp" ]; then
-    dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Set '' '' "$effectiveTemp"
+    response="$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Set '' '' "$effectiveTemp")"
   fi
 
   if [ "$(echo "$effectiveTemp < $targetPumpTemp" | bc -l)" = "1" ]; then
     # have to lower both circuits, otherwise buffer will still heat up too much
     if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
-      dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
+      response="$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp")"
     fi
     if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
-      dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Set '' '' "$effectiveTemp"
+      response="$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Set '' '' "$effectiveTemp")"
     fi
   fi
+fi
+
+if [ "$service" = "49" ]; then
+  echo 0 # switch needs a 0/1 response
 else
-  if [ "$service" = "49" ]; then
-    echo 0 # switch needs a 0/1 response
-  else
-    echo "$effectiveTemp"
-  fi
+  echo "$effectiveTemp"
 fi

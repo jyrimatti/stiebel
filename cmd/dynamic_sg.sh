@@ -12,10 +12,10 @@ accelerate="$(echo "$power < $limit" | bc)"
 
 if [ "$getset" = "Set" ]; then
   if [ "$accelerate" = 1 ]; then
-    dash ./cmd/sg_accelerated.sh Set
+    response="$(dash ./cmd/sg_accelerated.sh Set)"
   else
-    dash ./cmd/sg_standard.sh Set
+    response="$(dash ./cmd/sg_standard.sh Set)"
   fi
-else
-  echo "$accelerate"
 fi
+
+echo "$accelerate"

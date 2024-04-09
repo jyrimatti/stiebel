@@ -2,9 +2,9 @@
 #! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnused dash bc netcat xxd
 set -eu
 
-object=$1
-getset=$2
-value=${5:-}
+object="$1"
+getset="$2"
+value="${5:-}"
 
 . ./stiebel_env.sh
 
@@ -32,8 +32,7 @@ esac
 if [ "$getset" = "Get" ]; then
   ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
 elif [ "$getset" = "Set" ]; then
-  dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value" >&2
-  ret=1
+  ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value")"
 else
   exit 1
 fi
