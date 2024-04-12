@@ -24,8 +24,8 @@ cmd = "cd stiebel; ./cmd/cooling.sh"
 type = "Switch"
 
 [services.characteristics]
-Name = "Kesätila, maalämpö"
-ConfiguredName = "Kesätila, maalämpö"
+Name = "Kesätila maalämpö"
+ConfiguredName = "Kesätila maalämpö"
 [services.characteristics.On]
 cmd = "cd stiebel; ./cmd/summermode.sh"
 
