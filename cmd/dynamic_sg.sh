@@ -6,7 +6,7 @@ getset="${1:-}"
 
 limit=-3000
 
-power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w;)"
+power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
 
 accelerate="$(echo "$power < $limit" | bc)"
 
