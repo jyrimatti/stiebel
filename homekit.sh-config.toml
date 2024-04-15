@@ -128,6 +128,28 @@ minValue = -99
 
 
 [[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Käyttöveden lämpötila"
+ConfiguredName = "Käyttöveden lämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW"
+minValue = -99
+
+
+[[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Käyttöveden asetuslämpötila"
+ConfiguredName = "Käyttöveden asetuslämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh SET_TEMPERATURE_DHW"
+minValue = -99
+
+
+[[services]]
 type = "Switch"
 
 [services.characteristics]
