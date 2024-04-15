@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash xxd netcat
+#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash curl cacert dash flock xxd netcat
 set -eu
 
 getset="${1:-}"
@@ -16,5 +16,7 @@ if [ "$getset" = "Set" ]; then
   response="$(./stiebel_post.sh val456 $value)"
   echo 1
 else
-  dash ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 9 ))"; }
+  #dash ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 16 ))"; }
+  #./stiebel_get.sh 4,2 | grep 'id="aval456' | sed 's/.*id="aval456"\s*value="\([^"]*\)".*/\1/'
+  dash ./cmd/status.sh 'COOLING MODE'
 fi
