@@ -3,10 +3,14 @@ create table cooling_mode                   (instant INTEGER PRIMARY KEY, measur
 create table source_pump                    (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 create table dhw_valve                      (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 create table mixer_open                     (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
+create table mixer_close                    (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 create table mixer_pump                     (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 create table htg_circ_pump                  (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL); 
 create table compressor                     (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 create table buffer                         (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
+create table heating_circuit_pump           (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
+create table buffer_charging_pump           (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
+create table compressor_protection          (instant INTEGER PRIMARY KEY, measurement INTEGER NOT NULL);
 
 create table ACTUAL_TEMPERATURE_FEK      (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);
 create table SET_TEMPERATURE_FEK         (instant INTEGER PRIMARY KEY, measurement REAL NOT NULL);

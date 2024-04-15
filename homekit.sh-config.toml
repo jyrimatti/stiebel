@@ -169,3 +169,113 @@ ConfiguredName = "SG-ready asetus"
 [services.characteristics.On]
 polling = 5
 cmd = "cd stiebel; ./cmd/dynamic_sg.sh"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Source pump"
+ConfiguredName = "Source pump"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'SOURCE PUMP'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "DHW valve"
+ConfiguredName = "DHW valve"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'DHW VALVE'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Mixer open"
+ConfiguredName = "Mixer open"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'MIXER OPEN'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Mixer close"
+ConfiguredName = "Mixer close"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'MIXER CLOSE'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Mixer pump"
+ConfiguredName = "Mixer pump"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'MIXER PUMP'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "HTG circ pump"
+ConfiguredName = "HTG circ pump"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'HTG CIRC PUMP'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Compressor"
+ConfiguredName = "Compressor"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'COMPRESSOR'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Buffer"
+ConfiguredName = "Buffer"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'BUFFER'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Heating circuit pump"
+ConfiguredName = "Heating circuit pump"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'HEATING CIRCUIT PUMP'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Buffer charging pump"
+ConfiguredName = "Buffer charging pump"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'BUFFER CHARGING PUMP'"
+
+
+[[services]]
+type = "Switch"
+
+[services.characteristics]
+Name = "Compressor protection"
+ConfiguredName = "Compressor protection"
+[services.characteristics.On]
+cmd = "cd stiebel; ./cmd/status.sh 'VERDICHTERSCHUETZ'"
