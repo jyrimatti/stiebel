@@ -7,6 +7,9 @@ set -eu
 outputfile="/tmp/stiebel-$USER/cookies"
 session_length_minutes=10
 
+dir="$(dirname "$outputfile")"
+test -e "$dir" || mkdir -p "$dir"
+
 (
     flock 8
 
