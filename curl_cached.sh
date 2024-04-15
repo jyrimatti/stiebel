@@ -15,6 +15,9 @@ if [ -f "$outputfile" ] && [ -s "$outputfile" ]; then
     done
 fi
 
+cmd="curl --no-progress-meter -L -o '$outputfile'"
+for x in "$@"; do cmd="$cmd '$x'"; done
+
 dir="$(dirname "$outputfile")"
 test -e "$dir" || mkdir -p "$dir"
 
@@ -22,7 +25,7 @@ test -e "$dir" || mkdir -p "$dir"
     flock 8
 
     fetch() {
-        curl --no-progress-meter -L -o "$outputfile" "$url" $*
+        dash -c "$cmd"
     }
 
     if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ]; then
