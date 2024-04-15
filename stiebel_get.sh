@@ -4,7 +4,7 @@ set -eu
 
 page=$1
 
-./stiebel_login.sh
+dash ./stiebel_login.sh
 
 # cache page fetching since Stiebel sucks and only allows one request concurrently, which takes ~2 seconds...
 

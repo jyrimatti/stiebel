@@ -4,7 +4,7 @@ set -eu
 
 . ./stiebel_env.sh
 
-outputfile="/tmp/stiebel-cookies"
+outputfile="/tmp/stiebel-$USER/cookies"
 session_length_minutes=10
 
 (
