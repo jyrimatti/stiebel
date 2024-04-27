@@ -156,7 +156,6 @@ type = "Switch"
 Name = "SG standard"
 ConfiguredName = "SG standard"
 [services.characteristics.On]
-polling = 5
 cmd = "cd stiebel; ./cmd/sg_standard.sh"
 
 
@@ -167,7 +166,6 @@ type = "Switch"
 Name = "SG accelerated"
 ConfiguredName = "SG accelerated"
 [services.characteristics.On]
-polling = 5
 cmd = "cd stiebel; ./cmd/sg_accelerated.sh"
 
 
@@ -178,7 +176,6 @@ type = "Switch"
 Name = "SG maximum"
 ConfiguredName = "SG maximum"
 [services.characteristics.On]
-polling = 5
 cmd = "cd stiebel; ./cmd/sg_maximum.sh"
 
 
@@ -189,7 +186,6 @@ type = "Switch"
 Name = "SG asetus"
 ConfiguredName = "SG-ready asetus"
 [services.characteristics.On]
-polling = 5
 cmd = "cd stiebel; ./cmd/dynamic_sg.sh"
 
 
