@@ -5,7 +5,7 @@ set -eu
 . ./stiebel_env.sh
 
 outputfile="/tmp/stiebel-$USER/cookies"
-session_length_minutes=10
+session_length_minutes=600
 
 dir="$(dirname "$outputfile")"
 test -e "$dir" || mkdir -p "$dir"
