@@ -150,6 +150,17 @@ minValue = -99
 
 
 [[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Aulan asetuslämpötila"
+ConfiguredName = "Aulan asetuslämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh SET_TEMPERATURE_FEK"
+minValue = -99
+
+
+[[services]]
 type = "Switch"
 
 [services.characteristics]
