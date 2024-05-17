@@ -191,7 +191,7 @@ Name = "Cool lämpötila"
 ConfiguredName = "Cool lämpötila"
 [services.characteristics.CurrentTemperature]
 cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_AREA"
-minValue = -
+minValue = -99
 
 
 [[services]]
