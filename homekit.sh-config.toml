@@ -161,6 +161,51 @@ minValue = -99
 
 
 [[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "HK2 lämpötila"
+ConfiguredName = "HK2 lämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_HK_2"
+minValue = -99
+
+
+[[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Paluulämpötila"
+ConfiguredName = "Paluulämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_RETURN_TEMPERATURE"
+minValue = -99
+
+
+
+[[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Cool lämpötila"
+ConfiguredName = "Cool lämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh ACTUAL_TEMPERATURE_AREA"
+minValue = -
+
+
+[[services]]
+type = "TemperatureSensor"
+
+[services.characteristics]
+Name = "Cool asetuslämpötila"
+ConfiguredName = "Cool asetuslämpötila"
+[services.characteristics.CurrentTemperature]
+cmd = "cd stiebel; ./cmd/modbus.sh SET_TEMPERATURE_AREA"
+minValue = -99
+
+
+[[services]]
 type = "Switch"
 
 [services.characteristics]
