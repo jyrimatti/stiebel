@@ -52,6 +52,7 @@
   <a onclick="window.page = 'swegon';  window.reset();">swegon</a>
   <a onclick="window.page = 'huawei';  window.reset();">huawei</a>
   <a onclick="window.page = 'homewizard'; window.reset();">homewizard</a>
+  <a onclick="window.page = 'automower'; window.reset();">automower</a>
   <a onclick="window.page = 'ping'; window.reset();">ping</a>
   <a onclick="window.page = 'speed'; window.reset();" class="last">speed</a>
 </div>
@@ -213,6 +214,7 @@
       (onPage('swegon') ? ouman(queryF(start, end)) :
        onPage('huawei') ? huawei(queryF(start, end)) :
        onPage('homewizard') ? homewizard(queryF(start, end)) :
+       onPage('automower') ? automower(queryF(start, end)) :
        onPage('ping') ? ping(queryF(start, end)) :
        onPage('speed') ? speed(queryF(start, end)) :
        stiebel(queryF(start, end)))
@@ -409,6 +411,17 @@
       getAndDraw('total_power_import_kwh');
       getAndDraw('total_power_import_t1_kwh');
       getAndDraw('wifi_strength');
+    }
+
+    if (onPage('automower')) {
+      getAndDraw('battery');
+      getAndDraw('numberOfChargingCycles');
+      getAndDraw('numberOfCollisions');
+      getAndDraw('totalChargingTime');
+      getAndDraw('totalCuttingTime');
+      getAndDraw('totalDriveDistance');
+      getAndDraw('totalRunningTime');
+      getAndDraw('totalSearchingTime');
     }
 
     if (onPage('ping')) {
