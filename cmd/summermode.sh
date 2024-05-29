@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash curl cacert dash flock xxd netcat
+#! nix-shell --pure --keep LD_LIBRARY_PATH -i dash -I channel:nixos-23.11-small -p nix gnugrep gnused dash curl cacert dash flock xxd netcat
 set -eu
 
 getset="${1:-}"
