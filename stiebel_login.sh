@@ -24,7 +24,7 @@ test -e "$dir" || mkdir -p "$dir"
         }
     }
 
-    if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ]; then
+    if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ] ; then
         login
     else
         for i in $(find "$outputfile" -mmin +$session_length_minutes); do
