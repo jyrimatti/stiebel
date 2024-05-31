@@ -3,7 +3,7 @@
 set -eu
 
 object="$1"
-getset="$2"
+getset="${2:-Get}"
 value="${5:-}"
 
 . ./stiebel_env.sh
