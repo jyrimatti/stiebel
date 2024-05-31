@@ -4,7 +4,7 @@ set -eu
 
 page=$1
 
-dash ./stiebel_login.sh
+cookies="$(dash ./stiebel_login.sh)"
 
 DIR="${XDG_RUNTIME_DIR:-/tmp}/stiebel"
 
@@ -12,7 +12,7 @@ DIR="${XDG_RUNTIME_DIR:-/tmp}/stiebel"
 
 fetch() {
     test -e "$DIR" || mkdir -p "$DIR"
-    flock "$DIR/lock-$page" curl -4 --silent --show-error -L -b "$DIR/cookies" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' > "$DIR/$page"
+    flock "$DIR/lock-$page" curl -4 --silent --show-error -L -b "$cookies" http://$STIEBEL_HOST/?s=$page | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' > "$DIR/$page"
 }
 
 if [ ! -f "$DIR/$page" ] || [ ! -s "$DIR/$page" ]; then

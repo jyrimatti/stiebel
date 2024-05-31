@@ -4,9 +4,9 @@ set -eu
 
 . ./stiebel_env.sh
 
-dash ./stiebel_login.sh
+cookies="$(dash ./stiebel_login.sh)"
 
-dash ./curl_cached.sh "http://$STIEBEL_HOST/?s=2,0" | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' | {
+dash ./curl_cached.sh "http://$STIEBEL_HOST/?s=2,0" -b "$cookies" | sed 's/"OFF"/"0"/' | sed 's/"ON"/"1"/' | {
     statusfile="$(cat)"
     echo "$statusfile" | dash ./stiebel_status.sh "POWER-LOCKED"         | dash ./stiebel_convert.sh 'POWER_LOCKED'
     echo "$statusfile" | dash ./stiebel_status.sh "COOLING MODE"         | dash ./stiebel_convert.sh 'COOLING_MODE'

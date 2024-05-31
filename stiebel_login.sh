@@ -32,3 +32,5 @@ test -e "$dir" || mkdir -p "$dir"
         done
     fi
 ) 8> "$outputfile.lock"
+
+echo "$outputfile"
