@@ -24,13 +24,16 @@ test -e "$dir" || mkdir -p "$dir"
         }
     }
 
-    if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ] ; then
-        login
-    else
-        for i in $(find "$outputfile" -mmin +$session_length_minutes); do
+    # try a couple of times since sometimes fails
+    for j in 1 2 3; do
+        if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ] ; then
             login
-        done
-    fi
+        else
+            for i in $(find "$outputfile" -mmin +$session_length_minutes); do
+                login
+            done
+        fi
+    done
 ) 8> "$outputfile.lock"
 
 echo "$outputfile"
