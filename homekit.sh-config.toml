@@ -1,3 +1,7 @@
+bridge = "stiebel"
+port = 12303
+username = "AA:AA:AA:AA:AA:03"
+
 [[services]]
 type = "AccessoryInformation"
 
@@ -6,7 +10,7 @@ Identify = {} # leave property completely out 'cos otherwise Homekit won't accep
 Manufacturer = "Stiebel"
 Model = "WPF 10"
 Name = "Maalämpöpumppu"
-SerialNumber = "AA:AA:AA:AA:AA:AA"
+SerialNumber = "AA:AA:AA:AA:AA:03"
 FirmwareRevision = "100.1.1"
 
 
