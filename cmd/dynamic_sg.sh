@@ -5,21 +5,23 @@ set -eu
 getset="${1:-}"
 
 powerLimit=-3000
+stopLimit=500
 dhwTempLimit=57
 
 power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
 dhwTemp="$(cd ../stiebel && dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
 
 powerAvailable="$(echo "$power < $powerLimit" | bc)"
+powerDeficit="$(echo "$power > $stopLimit" | bc)"
 tempNotMax="$(echo "$dhwTemp < $dhwTempLimit" | bc)"
 
 accelerate="$([ "$powerAvailable" = 1 ] && [ "$tempNotMax" = 1 ] && echo 1 || echo 0)"
 if [ "$getset" = "Set" ]; then
   if [ "$accelerate" = 1 ]; then
     response="$(dash ./cmd/sg_accelerated.sh Set)"
-  else
+  elif [ "$powerDeficit" = 1 ]; then
     response="$(dash ./cmd/sg_standard.sh Set)"
   fi
 fi
 
-echo "$accelerate"
+echo 0
