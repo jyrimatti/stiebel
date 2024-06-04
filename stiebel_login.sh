@@ -30,16 +30,13 @@ test -e "$dir" || mkdir -p "$dir"
         rm "$outputfile"
     fi
 
-    # try a couple of times since sometimes fails
-    for j in 1 2 3; do
-        if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ]; then
+    if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ]; then
+        login
+    else
+        for i in $(find "$outputfile" -mmin +$session_length_minutes); do
             login
-        else
-            for i in $(find "$outputfile" -mmin +$session_length_minutes); do
-                login
-            done
-        fi
-    done
+        done
+    fi
 ) 8> "$outputfile.lock"
 
 echo "$outputfile"
