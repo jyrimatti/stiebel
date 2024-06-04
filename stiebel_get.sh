@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell --pure --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR --keep STIEBEL_USER --keep STIEBEL_PASSWORD --keep STIEBEL_HOST -i dash -I channel:nixos-23.11-small -p curl cacert gnused dash nix flock
-set -eu
+set -eux
 
 page="$1"
 
@@ -31,7 +31,7 @@ test -e "$DIR" || mkdir -p "$DIR"
     if [ ! -f "$DIR/$page" ] || [ ! -s "$DIR/$page" ]; then
         doFetch
     else
-        for i in $(find "$DIR/$page" -mmin +1); do
+        for i in $(find "$DIR" -name "$page" -mmin +1); do
             doFetch
         done
     fi
