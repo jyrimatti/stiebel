@@ -13,7 +13,7 @@ fi
 . ./stiebel_env.sh
 
 if [ "$getset" = "Set" ]; then
-  response="$(./stiebel_post.sh val456 $value)"
+  response="$(dash ./stiebel_post.sh val456 $value)"
   echo 1
 else
   #dash ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 16 ))"; }

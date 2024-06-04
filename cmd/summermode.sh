@@ -13,9 +13,9 @@ fi
 . ./stiebel_env.sh
 
 if [ "$getset" = "Set" ]; then
-  response="$(./stiebel_post.sh val103 $value)"
+  response="$(dash ./stiebel_post.sh val103 $value)"
   echo 1
 else
   #dash ./cmd/modbus.sh OPERATING_STATUS Get | { read -r byte; echo "$(( byte & 8 ))"; }
-  ./stiebel_get.sh 4,0,2 | grep 'id="aval103' | sed 's/.*id="aval103"\s*value="\([^"]*\)".*/\1/'
+  dash ./stiebel_get.sh 4,0,2 | grep 'id="aval103' | sed 's/.*id="aval103"\s*value="\([^"]*\)".*/\1/'
 fi

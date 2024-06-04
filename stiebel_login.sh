@@ -2,10 +2,12 @@
 #! nix-shell --pure --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR --keep STIEBEL_USER --keep STIEBEL_PASSWORD --keep STIEBEL_HOST -i dash -I channel:nixos-23.11-small -p curl cacert flock findutils dash
 set -eu
 
+relogin="${1:-0}"
+
 . ./stiebel_env.sh
 
 outputfile="${XDG_RUNTIME_DIR:-/tmp}/stiebel/cookies"
-session_length_minutes=600
+session_length_minutes=60
 
 dir="$(dirname "$outputfile")"
 test -e "$dir" || mkdir -p "$dir"
@@ -24,9 +26,13 @@ test -e "$dir" || mkdir -p "$dir"
         }
     }
 
+    if [ "$relogin" = "1" ]; then
+        rm "$outputfile"
+    fi
+
     # try a couple of times since sometimes fails
     for j in 1 2 3; do
-        if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ] ; then
+        if [ ! -f "$outputfile" ] || [ ! -s "$outputfile" ] || [ "$(cat "$outputfile" | wc -l)" -lt 5 ]; then
             login
         else
             for i in $(find "$outputfile" -mmin +$session_length_minutes); do
