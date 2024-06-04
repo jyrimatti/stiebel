@@ -18,9 +18,9 @@ tempNotMax="$(echo "$dhwTemp < $dhwTempLimit" | bc)"
 accelerate="$([ "$powerAvailable" = 1 ] && [ "$tempNotMax" = 1 ] && echo 1 || echo 0)"
 if [ "$getset" = "Set" ]; then
   if [ "$accelerate" = 1 ]; then
-    response="$(dash ./cmd/sg_accelerated.sh Set)"
+    response="$(dash ./cmd/sg_accelerated.sh Set '' '' 1)"
   elif [ "$powerDeficit" = 1 ]; then
-    response="$(dash ./cmd/sg_standard.sh Set)"
+    response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
   fi
 fi
 
