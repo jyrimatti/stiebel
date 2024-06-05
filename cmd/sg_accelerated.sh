@@ -14,20 +14,10 @@ if [ "$getset" = "Set" ]; then
   if [ "$value" = 0 ]; then
     response="$(dash ./cmd/sg_standard.sh Set)"
     echo 0
-  else
-    ret1="$(dash ./cmd/modbus.sh SG_READY_INPUT_1 Get)"
-    ret2="$(dash ./cmd/modbus.sh SG_READY_INPUT_2 Get)"
-    if [ "$ret1" = 1 ] && [ "$ret2" = 0 ]; then
-      echo 1
-    else
-      if [ "$ret1" != 1 ]; then
-        response="$(dash ./cmd/modbus.sh SG_READY_INPUT_1 Set '' '' 1)"
-      fi
-      if [ "$ret2" != 0 ]; then
-        response="$(dash ./cmd/modbus.sh SG_READY_INPUT_2 Set '' '' 0)"
-      fi
-      echo 0
-    fi
+  elif [ "$(dash ./cmd/modbus.sh SG_READY_OPERATING_STATE Get)" != 3 ]; then
+    response="$(dash ./cmd/modbus.sh SG_READY_INPUT_1 Set '' '' 1)"
+    response="$(dash ./cmd/modbus.sh SG_READY_INPUT_2 Set '' '' 0)"
+    echo 1
   fi
 else
   if [ "$(dash ./cmd/modbus.sh SG_READY_OPERATING_STATE Get)" = 3 ]; then
