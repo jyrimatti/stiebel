@@ -5,8 +5,7 @@ set -eu
 getset="${1:-}"
 
 powerLimit=-3000
-stopLimit=500
-dhwTempLimit=57
+dhwTempLimit=54
 
 power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
 dhwTemp="$(cd ../stiebel && dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
