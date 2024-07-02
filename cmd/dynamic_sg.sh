@@ -3,22 +3,38 @@
 set -eu
 
 getset="${1:-}"
+service="${2:-}"
 
-powerLimit=-3000
+powerLimit=-4000
 dhwTempLimit=54
 
-power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
-dhwTemp="$(cd ../stiebel && dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
-
-powerAvailable="$(echo "$power < $powerLimit" | bc)"
-tempNotMax="$(echo "$dhwTemp < $dhwTempLimit" | bc)"
-
-accelerate="$([ "$powerAvailable" = "1" ] && [ "$tempNotMax" = "1" ] && echo 1 || echo 0)"
 if [ "$getset" = "Set" ]; then
-  if [ "$accelerate" = "1" ]; then
-    response="$(dash ./cmd/sg_accelerated.sh Set '' '' 1)"
+  previousQuarter="$(cd ../homewizard && dash ./cmd/previous_quarterly_yield.sh ./homewizard.db)"
+  previousQuarterDrewPower="$(echo "$previousQuarter > 1000" | bc)"
+  
+  if [ "$(dash ./cmd/sg_accelerated.sh Get)" = 0 ]; then
+    if [ "$previousQuarterDrewPower" = 0 ]; then
+      dhwTemp="$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
+      tempBelowMax="$(echo "$dhwTemp < $dhwTempLimit" | bc)"
+      if [ "$tempBelowMax" = "1" ]; then
+        power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
+        powerAvailable="$(echo "$power < $powerLimit" | bc)"
+        if [ "$powerAvailable" = "1" ]; then
+          dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 true
+          response="$(dash ./cmd/sg_accelerated.sh Set '' '' 1)"
+          echo 1
+          exit 0
+        fi
+      fi
+    fi
   else
-    response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
+    if [ "$previousQuarterDrewPower" = 1 ]; then
+      # there was net power being drawn from the grid -> stop charging
+      dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 false
+      response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
+      echo 0
+      exit 0
+    fi
   fi
 fi
 

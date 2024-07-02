@@ -3,7 +3,6 @@
 set -eu
 
 getset="${1:-}"
-service="${2:-}"
 
 targetRoomTemp=21               # target room temperature
 targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
@@ -77,8 +76,4 @@ if [ "$getset" = "Set" ]; then
   fi
 fi
 
-if [ "$service" = "49" ]; then
-  echo 0 # switch needs a 0/1 response
-else
-  echo "$effectiveTemp"
-fi
+echo 0
