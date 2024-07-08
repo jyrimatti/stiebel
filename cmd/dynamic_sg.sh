@@ -5,21 +5,21 @@ set -eu
 getset="${1:-}"
 service="${2:-}"
 
-powerLimit=-4000
+powerLimit=-2000
 dhwTempLimit=54
 
 if [ "$getset" = "Set" ]; then
-  previousQuarter="$(cd ../homewizard && dash ./cmd/previous_quarterly_yield.sh ./homewizard.db)"
-  previousQuarterDrewPower="$(echo "$previousQuarter > 1000" | bc)"
+  currentQuarter="$(cd ../homewizard && dash ./cmd/current_quarterly_yield.sh ./homewizard.db)"
+  currentQuarterDrewPower="$(echo "$currentQuarter > 1000" | bc)"
   
   if [ "$(dash ./cmd/sg_accelerated.sh Get)" = 0 ]; then
-    if [ "$previousQuarterDrewPower" = 0 ]; then
+    if [ "$currentQuarterDrewPower" = 0 ]; then
       dhwTemp="$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
       tempBelowMax="$(echo "$dhwTemp < $dhwTempLimit" | bc)"
-      if [ "$tempBelowMax" = "1" ]; then
+      if [ "$tempBelowMax" = 1 ]; then
         power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
         powerAvailable="$(echo "$power < $powerLimit" | bc)"
-        if [ "$powerAvailable" = "1" ]; then
+        if [ "$powerAvailable" = 1 ]; then
           dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 true
           response="$(dash ./cmd/sg_accelerated.sh Set '' '' 1)"
           echo 1
@@ -28,7 +28,7 @@ if [ "$getset" = "Set" ]; then
       fi
     fi
   else
-    if [ "$previousQuarterDrewPower" = 1 ]; then
+    if [ "$currentQuarterDrewPower" = 1 ]; then
       # there was net power being drawn from the grid -> stop charging
       dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 false
       response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
