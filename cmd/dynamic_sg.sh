@@ -28,8 +28,10 @@ if [ "$getset" = "Set" ]; then
       fi
     fi
   else
-    if [ "$currentQuarterDrewPower" = 1 ]; then
-      # there was net power being drawn from the grid -> stop charging
+    dhwTemp="$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_DHW)"
+    tempAboveMax="$(echo "$dhwTemp >= $dhwTempLimit" | bc)"
+    if [ "$tempAboveMax" = 1 ] || [ "$currentQuarterDrewPower" = 1 ]; then
+      # target temp was reached, or there was net power being drawn from the grid -> stop
       dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 false
       response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
       echo 0
