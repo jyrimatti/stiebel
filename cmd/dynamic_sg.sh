@@ -20,7 +20,6 @@ if [ "$getset" = "Set" ]; then
         power="$(cd ../homewizard && dash ./cmd/data.sh active_power_w)"
         powerAvailable="$(echo "$power < $powerLimit" | bc)"
         if [ "$powerAvailable" = 1 ]; then
-          dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 true
           response="$(dash ./cmd/sg_accelerated.sh Set '' '' 1)"
           echo 1
           exit 0
@@ -32,7 +31,6 @@ if [ "$getset" = "Set" ]; then
     tempAboveMax="$(echo "$dhwTemp >= $dhwTempLimit" | bc)"
     if [ "$tempAboveMax" = 1 ] || [ "$currentQuarterDrewPower" = 1 ]; then
       # target temp was reached, or there was net power being drawn from the grid -> stop
-      dash ./notify.sh "$(echo "$service" | jq -r '.aid')" 102 false
       response="$(dash ./cmd/sg_standard.sh Set '' '' 1)"
       echo 0
       exit 0
