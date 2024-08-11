@@ -6,7 +6,7 @@ getset="${1:-}"
 service="${2:-}"
 
 powerLimit=-2000
-dhwTempLimit=54
+dhwTempLimit=51
 
 if [ "$getset" = "Set" ]; then
   currentQuarter="$(cd ../homewizard && dash ./cmd/current_quarterly_yield.sh ./homewizard.db)"
