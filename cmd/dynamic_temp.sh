@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert coreutils xxd netcat
+#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-23.11-small -p nix dash bc curl cacert coreutils xxd netcat gnugrep
 set -eu
 
 getset="${1:-}"
@@ -12,7 +12,8 @@ nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
 nightStart=22                   # night time starts at this hour
 nightEnd=7                      # night time ends at this hour
 
-prices="$(curl --no-progress-meter 'https://spot.lahteenmaki.net/current.csv?tax=24' 'https://spot.lahteenmaki.net/current.csv?tax=24&delta=1'\
+prices="$(curl --no-progress-meter 'https://spot.lahteenmaki.net/current.csv' 'https://spot.lahteenmaki.net/current.csv?delta=1'\
+  | grep -v 'startTime'\
   | cut -d, -f2\
   | tr '\n' ' ')"
 
