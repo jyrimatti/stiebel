@@ -21,8 +21,9 @@ currentPrice="$(echo "$prices" | cut -d' ' -f1)"
 nextPrice="$(echo "$prices" | cut -d' ' -f2)"
 
 if [ "$currentPrice" = '' ] || [ "$nextPrice" = '' ]; then
-  # some error fetching prices -> keep normal temperature
-  effectiveTemp="$targetPumpTemp"
+  # some error fetching prices -> don't change anything
+  echo 0
+  exit 0
 else
   price="${PRICE:-$currentPrice}"
   next="${NEXT_PRICE:-$nextPrice}"
