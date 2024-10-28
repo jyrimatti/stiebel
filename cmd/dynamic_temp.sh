@@ -4,7 +4,7 @@ set -eu
 
 getset="${1:-}"
 
-targetRoomTemp=21               # target room temperature
+targetRoomTemp=22               # target room temperature
 targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
 minTemp=12                      # don't try below this
 maxTemp=27                      # don't try above this
