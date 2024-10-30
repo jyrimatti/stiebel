@@ -4,8 +4,11 @@ set -eu
 
 getset="${1:-}"
 
-targetRoomTemp=22               # target room temperature
-targetPumpTemp=19               # value that is "enough" for the pump to keep room temperature near targetRoomTemp
+# This assumes:
+# HC1 is the circulation from heat pump to the buffer
+# HC2 is the circulation from buffer to the floors
+
+targetRoomTemp=21               # target room temperature
 minTemp=12                      # don't try below this
 maxTemp=27                      # don't try above this
 nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
@@ -41,6 +44,12 @@ else
   # next hour will be cheaper -> heat less.
   effectiveTemp="$(echo "$targetTemp + ($next-($price))/5" | bc -l)"
 
+  # increase temperature if room is colder than target
+  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
+  if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
+    effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
+  fi
+
   # Math.min($effectiveTemp, $maxTemp)
   if [ "$(echo "$effectiveTemp > $maxTemp" | bc -l)" = "1" ]; then
     effectiveTemp="$maxTemp"
@@ -48,12 +57,6 @@ else
   # Math.max($effectiveTemp, $minTemp)
   if [ "$(echo "$effectiveTemp < $minTemp" | bc -l)" = "1" ]; then
     effectiveTemp="$minTemp"
-  fi
-
-  # increase temperature if room is colder than target
-  currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
-  if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
-    effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
   fi
 fi
 
@@ -67,14 +70,17 @@ if [ "$getset" = "Set" ]; then
     response="$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC1 Set '' '' "$effectiveTemp")"
   fi
 
-  if [ "$(echo "$effectiveTemp < $targetPumpTemp" | bc -l)" = "1" ]; then
-    # have to lower both circuits, otherwise buffer will still heat up too much
-    if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
-      response="$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$effectiveTemp")"
-    fi
-    if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Get)" != "$effectiveTemp" ]; then
-      response="$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Set '' '' "$effectiveTemp")"
-    fi
+  # have to lower also HC2, otherwise buffer will still heat up too much. But don't raise HC2 above targetRoomTemp.
+  # Math.min($effectiveTemp, $targetRoomTemp)
+  hc2Temp="$effectiveTemp"
+  if [ "$(echo "$effectiveTemp > $targetRoomTemp" | bc -l)" = "1" ]; then
+    hc2Temp="$targetRoomTemp"
+  fi
+  if [ "$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Get)" != "$hc2Temp" ]; then
+    response="$(dash ./cmd/modbus.sh COMFORT_TEMPERATURE_HC2 Set '' '' "$hc2Temp")"
+  fi
+  if [ "$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Get)" != "$hc2Temp" ]; then
+    response="$(dash ./cmd/modbus.sh ECO_TEMPERATURE_HC2 Set '' '' "$hc2Temp")"
   fi
 elif [ "$getset" = "Get" ]; then
   echo 0
