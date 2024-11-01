@@ -8,7 +8,7 @@ getset="${1:-}"
 # HC1 is the circulation from heat pump to the buffer
 # HC2 is the circulation from buffer to the floors
 
-targetRoomTemp=21               # target room temperature
+targetRoomTemp=20               # target room temperature
 minTemp=12                      # don't try below this
 maxTemp=27                      # don't try above this
 nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
