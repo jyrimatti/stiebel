@@ -8,10 +8,10 @@ getset="${1:-}"
 # HC1 is the circulation from heat pump to the buffer
 # HC2 is the circulation from buffer to the floors
 
-targetRoomTemp=20               # target room temperature
+targetRoomTemp=21               # target room temperature
 minTemp=12                      # don't try below this
-maxTemp=27                      # don't try above this
-nightDelta=${NIGHT_DELTA:-1.69} # reduce price by this much during night time
+maxTemp=25                      # don't try above this
+nightDelta=${NIGHT_DELTA:-1.77} # reduce price by this much during night time
 nightStart=22                   # night time starts at this hour
 nightEnd=7                      # night time ends at this hour
 
@@ -44,11 +44,9 @@ else
   # next hour will be cheaper -> heat less.
   effectiveTemp="$(echo "$targetTemp + ($next-($price))/5" | bc -l)"
 
-  # increase temperature if room is colder than target
+  # increase temperature if room is colder than target, and decrease if room is warmer than target
   currentRoomTemp="${CURRENT_ROOM_TEMP:-$(dash ./cmd/modbus.sh ACTUAL_TEMPERATURE_FEK Get)}"
-  if [ "$(echo "$currentRoomTemp < $targetRoomTemp" | bc -l)" = "1" ]; then
-    effectiveTemp="$(echo "$effectiveTemp + ($targetRoomTemp - $currentRoomTemp)" | bc -l)"
-  fi
+  effectiveTemp="$(echo "$effectiveTemp + 2*($targetRoomTemp - $currentRoomTemp)" | bc -l)"
 
   # Math.min($effectiveTemp, $maxTemp)
   if [ "$(echo "$effectiveTemp > $maxTemp" | bc -l)" = "1" ]; then
