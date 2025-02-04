@@ -1,5 +1,6 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA -i dash -I channel:nixos-24.11-small -p nix dash bc curl cacert coreutils xxd netcat gnugrep
+#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep BKT_SCOPE --keep BKT_CACHE_DIR --keep PRICE --keep NEXT_PRICE --keep CURRENT_ROOM_TEMP --keep NIGHT_DELTA
+#! nix-shell -i dash -I channel:nixos-24.11-small -p nix dash bc curl cacert coreutils xxd netcat gnugrep bkt
 set -eu
 
 getset="${1:-}"

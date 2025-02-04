@@ -1,5 +1,6 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR -i dash -I channel:nixos-24.05-small -p nix dash bc curl cacert gnused
+#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep BKT_SCOPE --keep BKT_CACHE_DIR
+#! nix-shell -i dash -I channel:nixos-24.05-small -p nix dash bc curl cacert gnused bkt
 set -eu
 
 echo "price room_22 room_21 room_20 room_19 room_18"

@@ -1,5 +1,6 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep XDG_RUNTIME_DIR -i dash -I channel:nixos-24.11-small -p nix gnused dash bc netcat xxd
+#! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep BKT_SCOPE --keep BKT_CACHE_DIR
+#! nix-shell -i dash -I channel:nixos-24.11-small -p nix gnused dash bc netcat xxd bkt
 set -eu
 
 object="$1"
@@ -30,9 +31,10 @@ case ${OBJECTID##*/} in
 esac
 
 if [ "$getset" = "Get" ]; then
-  ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
+  ret="$(bkt --discard-failures --ttl 2m --stale 1m --modtime "${BKT_CACHE_DIR:-/tmp}/invalidate" -- dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
 elif [ "$getset" = "Set" ]; then
   ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value")"
+  touch "${BKT_CACHE_DIR:-/tmp}/invalidate"
 else
   exit 1
 fi
