@@ -10,7 +10,7 @@ page="$1"
 fetch() {
     relogin="${1:-0}"
     dash ./stiebel_login.sh "$relogin" |
-        bkt --discard-failures --ttl 2m --stale 1m --modtime "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate" -- curl --no-progress-meter -L -b '-' http://$STIEBEL_HOST/?s=$page |
+        bkt --discard-failures --ttl 60s --stale 50s --modtime "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate" -- curl --no-progress-meter -L -b '-' http://$STIEBEL_HOST/?s=$page |
         sed 's/"OFF"/"0"/' |
         sed 's/"ON"/"1"/'
 }
