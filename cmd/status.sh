@@ -18,8 +18,6 @@ value="$1"
 # BUFFER CHARGING PUMP
 # VERDICHTERSCHUETZ      # compressor protection
 
-. ./stiebel_env.sh
-
 dash ./stiebel_get.sh 2,0 | {
     grep -q ">$value<" && echo 1 || echo 0
 }

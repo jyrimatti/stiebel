@@ -31,10 +31,10 @@ case ${OBJECTID##*/} in
 esac
 
 if [ "$getset" = "Get" ]; then
-  ret="$(bkt --discard-failures --ttl 2m --stale 1m --modtime "${BKT_CACHE_DIR:-/tmp}/invalidate" -- dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
+  ret="$(bkt --discard-failures --ttl 2m --stale 1m --modtime "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate" -- dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
 elif [ "$getset" = "Set" ]; then
   ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value")"
-  touch "${BKT_CACHE_DIR:-/tmp}/invalidate"
+  touch "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate"
 else
   exit 1
 fi

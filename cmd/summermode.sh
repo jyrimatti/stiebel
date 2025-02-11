@@ -11,8 +11,6 @@ else
   value="0";
 fi
 
-. ./stiebel_env.sh
-
 if [ "$getset" = "Set" ]; then
   response="$(dash ./stiebel_post.sh val103 $value)"
   echo 1
