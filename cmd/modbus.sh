@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell --pure --keep CREDENTIALS_DIRECTORY --keep LD_LIBRARY_PATH --keep BKT_SCOPE --keep BKT_CACHE_DIR
-#! nix-shell -i dash -I channel:nixos-24.11-small -p nix gnused dash bc netcat xxd bkt
+#! nix-shell -i dash -I channel:nixos-24.11-small -p nix gnused dash bc netcat xxd bkt flock
 set -eu
 
 object="$1"
@@ -30,11 +30,13 @@ case ${OBJECTID##*/} in
     ;;
 esac
 
+lock="${BKT_CACHE_DIR:-/tmp}/stiebel.lock"
+
 if [ "$getset" = "Get" ]; then
-  ret="$(bkt --discard-failures --ttl 60s --stale 50s --modtime "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate" -- dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
+  ret="$(flock "$lock" bkt --discard-failures --ttl 60s --stale 50s --modtime "$lock" -- dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" "$fcode" "$register" "$type")"
 elif [ "$getset" = "Set" ]; then
   ret="$(dash ./modbus.sh/modbus.sh -m "$MULTIPLIER" "$STIEBEL_HOST" 6 "$register" "$type" "$value")"
-  touch "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate"
+  touch "$lock"
 else
   exit 1
 fi

@@ -13,6 +13,8 @@ else
     force=''
 fi
 
-bkt --discard-failures --ttl 60m --stale 30m $force -- \
-    flock "${BKT_CACHE_DIR:-/tmp}/stiebel-login.lock" -c \
-    "curl --silent -o /dev/null -d 'make=send&user=$STIEBEL_USER&pass=$STIEBEL_PASSWORD' --cookie-jar '-' http://$STIEBEL_HOST/?s=0"
+lock="${BKT_CACHE_DIR:-/tmp}/stiebel-login.lock"
+
+flock "$lock" \
+    bkt --discard-failures --ttl 60m --stale 50m $force -- \
+        curl --silent -o /dev/null -d "make=send&user=$STIEBEL_USER&pass=$STIEBEL_PASSWORD" --cookie-jar '-' "http://$STIEBEL_HOST/?s=0"

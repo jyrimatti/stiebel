@@ -7,14 +7,16 @@ page="$1"
 
 . ./stiebel_env.sh
 
+lock="${BKT_CACHE_DIR:-/tmp}/stiebel.lock"
+
 fetch() {
     relogin="${1:-0}"
-    dash ./stiebel_login.sh "$relogin" |
-        bkt --discard-failures --ttl 60s --stale 50s --modtime "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate" -- \
-            flock "${BKT_CACHE_DIR:-/tmp}/stiebel-$page.lock" \
-                curl --no-progress-meter -L -b '-' http://$STIEBEL_HOST/?s=$page |
-        sed 's/"OFF"/"0"/' |
-        sed 's/"ON"/"1"/'
+    dash ./stiebel_login.sh "$relogin" \
+        | flock "$lock" \
+              bkt --discard-failures --ttl 60s --stale 50s --modtime "$lock" -- \
+                  curl --no-progress-meter -L -b '-' http://$STIEBEL_HOST/?s=$page \
+        | sed 's/"OFF"/"0"/' \
+        | sed 's/"ON"/"1"/'
 }
 
 response="$(fetch)"

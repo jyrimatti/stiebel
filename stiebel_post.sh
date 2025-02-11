@@ -18,4 +18,4 @@ if { doPost | grep -q 'User name:'; }; then
     doPost 1
 fi
 
-touch "${BKT_CACHE_DIR:-/tmp}/stiebel-invalidate"
+touch "${BKT_CACHE_DIR:-/tmp}/stiebel.lock"
